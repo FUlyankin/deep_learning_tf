@@ -176,7 +176,7 @@
 
 \title[]{\textcolor{blue}{Глубокое обучение и вообще}}
 \author{Ульянкин Филипп}
-\date{\today}
+\date{9 февраля 2022 г.}%\today}
 
 \usepackage{ulem}
 \usepackage{MnSymbol,wasysym}
@@ -229,7 +229,7 @@
 
 {
 	\usebackgroundtemplate{ 
-		\hspace{3cm}	\includegraphics[height=\paperheight]{ya.jpg}}
+		\hspace{3cm}	\includegraphics[height=\paperheight]{ya-logo.png}}
 	\begin{frame}
 \end{frame}
 }
@@ -259,19 +259,22 @@
 		
 		\item  на парах смотрим презы, пишем код, решаем задачи
 		
-		\item все материалы можно найти на  \href{https://github.com/FUlyankin/neural_nets_dpo}{страничке курса}
+		\item все материалы можно найти на  \href{https://github.com/FUlyankin/deep_learning_tf}{страничке курса}
 	\end{wideitemize} 
 \end{frame}
 
-%\begin{frame}{Про домашки}
-%\begin{wideitemize}
-%	\item  Не делаешь сам $\Rightarrow$ никогда не научишься $\Rightarrow$ \sout{большие} огромные домашки
-%	
-%	\item  Домашки делаются в командах по два человека, их около 8 штук, баллы ставятся на команду. Можно набрать $> 200$ баллов. Если вы набрали $100$, у вас десятка. 
-%	
-%	\item  $N \le 6$ человек из топа списка свожу почилить на крышу Яндекса. 
-%\end{wideitemize} 
-%\end{frame}
+
+\begin{frame}{Многослойная формула оценки}
+	\begin{wideitemize}
+		\item \alert{Домашние задания:} пять штук с кодом на питоне
+		\item Жёсткий дедлайн, мягкий дедлайн, три медовых дня для их сдвига
+		\item \alert{Квизы:} около 10  штук на семинарах 
+		\item \alert{Мидтёрм:} письменный
+		\item \alert{Экзамен:}  письменный 
+		\item Формула оценивания на \href{https://github.com/FUlyankin/deep_learning_tf}{страничке курса}
+	\end{wideitemize}
+\end{frame}
+
 
 \begin{frame}{Что почитать про нейронки в первую очередь}
 \begin{columns}
@@ -314,26 +317,24 @@
 \end{frame} 
 
 
-\begin{frame}{Что посмотреть  про нейронки}
+\begin{frame}{Что ещё посмотреть  про нейронки}
 \begin{wideitemize} 
-% \item Если ничего не знаете про машинное обучение, смотрите \href{https://www.coursera.org/specializations/machine-learning-data-analysis}{вводный курс от Яндекса и МФТИ.} \alert{Для тех, кто мало знает про ML.}
-
 \item  \href{https://dlcourse.ai}{Deep learning на пальцах.} Лекции из кремниевой долины. Задания на pytorch для самостоятельного решения.   \alert{Для тех, кто  хочет мало математики и понимания что происходит.}
 
-\item Бесплатный \href{https://stepik.org/course/50352/syllabus}{курс по pytorch от Samsung.}  Вводный курс в нейросетки на pytorch. Состоит из двух частей: CV и NLP. \alert{Для тех, кто  хочет писать на pytorch.}
+\item \href{https://stepik.org/course/50352/syllabus}{Курс на pytorch от Samsung.}  Состоит из двух частей: CV и NLP. \alert{Для тех, кто  хочет писать на pytorch.}
 
 \item  \href{https://www.coursera.org/specializations/aml}{Advanced ML от Яндекса.} Несколько курсов с нейросетями. Код на Tensorflow. Версия библиотеки там пока что старая.  \alert{Для тех, кто хочет развиваться дальше.}
 
+\item  \href{https://www.udacity.com/course/intro-to-tensorflow-for-deep-learning--ud187}{Курс по tf от Google.} Короткий, покрывает базовый Keras. Есть странные интервью.  \alert{Для тех, кто  хочет быстро зашарить Keras.}
 \end{wideitemize} 
 \end{frame} 
 
 
-\begin{frame}{Что посмотреть  про нейронки}
-\begin{wideitemize} 	
-	
+\begin{frame}{Что ещё посмотреть  про нейронки}
+\begin{wideitemize} 		
 	\item  \href{https://github.com/yandexdataschool/Practical_DL/tree/master}{Курс нейронок, который читают в ШАД и Сколтехе.} Есть варианты кода на разных фреймворках. Есть видео лекций на русском и английском. \alert{Для тех, кто хочет посмотреть как читают курс по DL  в ШАД.}
 	
-	\item Бесплатный \href{https://www.udacity.com/course/intro-to-tensorflow-for-deep-learning--ud187}{курс по tf от Google.} Короткий. Покрывает весь базовый Keras. Все тетрадки выложены в colab. Есть странные интервью.  \alert{Для тех, кто  хочет быстро зашарить keras.}
+	\item  \href{https://github.com/yandexdataschool/Practical_DL/tree/master}{Курс по свёрточным нейросетям от Стэнфорда cs231n.}  Есть видео на youtbe и конспекты. Я часто буду на них ссылаться.  Многие курсы используют их материалы у себя. 
 	
 	\item  \href{https://www.coursera.org/specializations/deep-learning} {Нейронные сети от Andrew Ng.} Когда ML ещё не был таким модным, все смотрели его лекции. \alert{Для тех, кто хочет всё делать медленно и непринуждённо.}
 \end{wideitemize} 
@@ -360,9 +361,9 @@
 	\itemsep1pt
 	\item \alert{Базовая часть курса:}
 	\item От регрессии к нейросети
-	\item 50 оттенков градиентного спуска, Backpropagation
-	\item Введение в Tensorflow
-	\item Эвристики и приёмы для обучения сеток
+	\item Алгоритм обратного распространения ошибки
+	\item Нейросети - конструктрор LEGO
+	\item Оптимизация и эвристики для обучения
 	\end{itemize}
 };
 \draw[thick,decorate,decoration={brace,mirror,amplitude=5pt}, color=red!50!black] (C1.north west) -- (C1.south west) node[midway] {};
@@ -379,7 +380,7 @@
 	\item  Свёрточные сети, локализация, сегментация, перенос стиля
 	\item  Автокодировщики, генеративные модели
 	\item  Рекурентные нейронные сетки, временные ряды
-	\item  Введение в NLP, эмбединги, автопереводы, трансформеры
+	\item  Работа с текстами, эмбединги, трансформеры
 	\end{itemize}
 };
 \draw[thick,decorate,decoration={brace,mirror,amplitude=5pt}, color=green!25!black] (C2.north west) -- (C2.south west) node[midway] {};
@@ -402,7 +403,7 @@
 	\centering \href{https://vk.com/skialz}{\includegraphics[scale = 0.15]{frameworks_pr.png}}
 \end{transitionframe}
 
-% переделать в виде таблицы, а то кривовато  (А, ПОХУЙ!)
+% переделать в виде таблицы, а то кривовато
 \begin{frame}{Фрэймворки}
 \begin{columns}[T] % align columns
 	\begin{column}{.33\textwidth}
@@ -438,89 +439,36 @@
 \end{frame}
 
 
-\begin{frame}{Обёртки}
+\begin{frame}{Tensorflow vs Pytorch}
 \begin{center}
-\begin{columns}[T] % align columns
-	\begin{column}{.48\textwidth}
-		\centering 	
-		Сначала обёртка для Theano, потом для Tensorflow, сейчас фактически часть Tensorflow \\ 
-		\mbox{  } \\
-		\includegraphics[width=.5\linewidth]{keras.png} \\
-	\end{column}%
-	\hfill%
-	\begin{column}{.48\textwidth}
-		\centering 	
-		Обёртка для Theano \\ 
-		\mbox{  } \\
-		\includegraphics[width=.5\linewidth]{lasagne.jpeg} \\
-	\end{column}%
-\end{columns}
+	\includegraphics[width=.9\linewidth]{tf_vs_pt.png}
 \end{center}
-
-\vspace{2.5cm}
-% \vfill % чёт не работает 
-
-\scriptsize
-Лекция про фрэймворки на русском (из  далёкого 2017 года): \color{blue} \url{https://www.youtube.com/watch?v=ghZyptkanB0} 
-\end{frame}
+\end{frame} 
 
 
-% Переделать слайд нормально, блин 
 \begin{frame}{Подходы к вычислениям}
 \begin{center}
-	\includegraphics[width=.9\linewidth]{graph.png}
+	\includegraphics[width=.85\linewidth]{graph.png}
 \end{center}
 \end{frame} 
 
 
 \begin{frame}{Символьный подход}
 \begin{wideitemize}
-\item[+] Легко строить сеть из вычислений и автоматически искать по ней производные \alert{(быстрая и простая оптимизация)}
+\item[$\oplus$] Легко строить сеть из вычислений и автоматически искать по ней производные \alert{(быстрая и простая оптимизация)}
 
-\item[+] Более эффективные вычисления, как по памяти, так и по скорости (на этапе компиляции можно выявить неиспользуемые переменные, найти места для переиспользования и тп) 
+\item[$\oplus$] Более эффективные вычисления, как по памяти, так и по скорости (на этапе компиляции можно выявить неиспользуемые переменные, найти места для переиспользования и тп) 
 
-\item Довольно сложно искать ошибки из-за того, что cначала задаётся граф вычислений
+\item[$\ominus$] Довольно сложно искать ошибки из-за того, что cначала задаётся граф вычислений
 \end{wideitemize}
 \end{frame} 
 
 
-\begin{frame}{Мощь библиотек (немного устарело) }
-
-\begin{columns}[T] % align columns
-	\begin{column}{.48\textwidth}
-		\centering  \includegraphics[width=.9\linewidth]{frameworks.png}
-	\end{column}%
-	\hfill%
-	\begin{column}{.48\textwidth}
-		\centering 	\includegraphics[width=.9\linewidth]{frameworks_2019.png}
-	\end{column}%
-\end{columns}
-\vfill %
-
-\vspace{2cm}
-% \vfill % чёт не работает 
-
-\scriptsize
-\color{blue} \url{https://towardsdatascience.com/deep-learning-framework-power-scores-2018-23607ddf297a} \\
-\url{https://keras.io/why-use-keras/}
-\end{frame} 
-
-
-\begin{frame}{Tensorflow 2.0}
-\begin{center}
-	\includegraphics[width=.8\linewidth]{tf2.png}
-\end{center}
-\vfill %
-\scriptsize
-\color{blue} \url{https://www.tensorflow.org/beta/guide/effective_tf2}
-\end{frame} 
-
-
-\begin{frame}{Tensorflow 2.0}
-\begin{center}
-	\includegraphics[width=.9\linewidth]{tensorflow_Str.png}
-\end{center}
-\end{frame} 
+%\begin{frame}{Tensorflow 2.0}
+%\begin{center}
+%	\includegraphics[width=.9\linewidth]{tensorflow_Str.png}
+%\end{center}
+%\end{frame} 
 
 
 \begin{transitionframe}
@@ -534,55 +482,55 @@
 %%%%%% Реальные события 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%{
-%	\usebackgroundtemplate{ 
-%		\includegraphics[width=\paperwidth]{history_1.png}}
-%	\begin{frame}
-%\end{frame}
-%}
-%
-%{
-%\usebackgroundtemplate{ 
-%	\includegraphics[width=\paperwidth]{history_2.png}}
-%\begin{frame}
-%\end{frame}
-%}
-%
-%{
-%\usebackgroundtemplate{ 
-%\includegraphics[width=\paperwidth]{history_3.png}}
-%\begin{frame}
-%\end{frame}
-%}
-%
-%{
-%\usebackgroundtemplate{ 
-%\includegraphics[width=\paperwidth]{history_4.png}}
-%\begin{frame}
-%\end{frame}
-%}
-%
-%{
-%\usebackgroundtemplate{ 
-%\includegraphics[width=\paperwidth]{history_5.png}}
-%\begin{frame}
-%\end{frame}
-%}
-%
-%
-%\begin{frame}{}
-%\begin{center} 
-%	\includegraphics[height=0.98\paperheight]{history_egypt.png} 
-%\end{center} 
-%\end{frame}
-%
-%
-%{
-%\usebackgroundtemplate{ 
-%\includegraphics[width=\paperwidth]{history_6.png}}
-%\begin{frame}
-%\end{frame}
-%}
+{
+	\usebackgroundtemplate{ 
+		\includegraphics[width=\paperwidth]{history_1.png}}
+	\begin{frame}
+\end{frame}
+}
+
+{
+\usebackgroundtemplate{ 
+	\includegraphics[width=\paperwidth]{history_2.png}}
+\begin{frame}
+\end{frame}
+}
+
+{
+\usebackgroundtemplate{ 
+\includegraphics[width=\paperwidth]{history_3.png}}
+\begin{frame}
+\end{frame}
+}
+
+{
+\usebackgroundtemplate{ 
+\includegraphics[width=\paperwidth]{history_4.png}}
+\begin{frame}
+\end{frame}
+}
+
+{
+\usebackgroundtemplate{ 
+\includegraphics[width=\paperwidth]{history_5.png}}
+\begin{frame}
+\end{frame}
+}
+
+
+\begin{frame}{}
+\begin{center} 
+	\includegraphics[height=0.98\paperheight]{history_egypt.png} 
+\end{center} 
+\end{frame}
+
+
+{
+\usebackgroundtemplate{ 
+\includegraphics[width=\paperwidth]{history_6.png}}
+\begin{frame}
+\end{frame}
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% Дальше вымышленные события
@@ -810,6 +758,21 @@
 \end{frame} 
 
 
+\begin{frame}{Важные уроки истории}
+	\begin{wideitemize}
+		\item \alert{Многие вещи переизобретались несколько раз или долго ждали своего часа }
+		
+		\item Алгоритм обратного распространения ошибки придуман в 1969, а потом переизобретён параллельно двумя группами в 1980-е
+		
+		\item \alert{Завышенные ожидания возникают постоянно}
+		
+		\item Основной акцент учёные делали на алгоритмах, но современные исследования показывают, что для многих проблем осмысленно уделять больше внимания данным, чем выбору алгоритмов
+		
+		\item \alert{Большее количество качественных данных может существенно улучшить качество того же самого алгоритма}
+	\end{wideitemize}
+\end{frame} 
+
+
 \begin{transitionframe}
 	\begin{center}
 		\Huge Важные тренды
@@ -869,18 +832,22 @@
 
 \begin{frame}{\# 3. Объёмы данных растут}
 \begin{center}
-	\includegraphics[width=.6\linewidth]{trend3.png}
+	\includegraphics[width=.8\linewidth]{data-vol-gr.png}
 \end{center}
 \vfill %
 \footnotesize
-\color{blue} \url{https://www.internetlivestats.com}
+\color{blue} \url{https://medium.com/analytics-vidhya/the-5-vs-of-big-data-2758bfcc51d}
 \end{frame} 
 
 
 \begin{frame}{\# 4. Вычислительные мощности растут}
 \begin{center}
-	\includegraphics[width=.6\linewidth]{trend4.png}
+%	\includegraphics[width=.6\linewidth]{trend4.png}
+	\includegraphics[width=.95\linewidth]{gpu_perf_trends.png}
 \end{center}
+\vfill %
+\footnotesize
+\color{blue} \url{https://arxiv.org/pdf/1911.11313.pdf}
 \end{frame} 
 
 
@@ -891,6 +858,16 @@
 \vfill %
 \footnotesize
 \color{blue} \url{https://tproger.ru/articles/cpu-and-gpu/}
+\end{frame} 
+
+
+\begin{frame}{\# 5. Бабло течёт}
+\begin{center}
+	\includegraphics[width=.85\linewidth]{investment.png}
+\end{center}
+\vfill %
+\footnotesize
+\color{blue} \url{https://aiindex.stanford.edu/report/}
 \end{frame} 
 
 
@@ -1116,7 +1093,7 @@ y = h \cdot W_2 = X \cdot W_1 \cdot W_2 = X \cdot A
 \begin{frame}{Сигмоида}
 \begin{wideitemize}
 	\item В маленьких сетках сигмоиду можно смело использовать
-	\item В глубоких сетях из-за сигмоиды возникает \alert{паралич сети} 
+	\item В глубоких сетях из-за сигмоиды возникает \alert{паралич сети,} сеть прекращает учиться 
 	\item Про него подробнее мы поговорим чуть позже 
 	\item Нужна другая нелинейная функция активации 
 \end{wideitemize}
@@ -1150,7 +1127,7 @@ y = h \cdot W_2 = X \cdot W_1 \cdot W_2 = X \cdot A
 \begin{transitionframe}
 	\begin{center}
 		\Huge Персептрон \\ \mbox{ } \\
-		\includegraphics[scale=0.25]{artifitial_idiot.jpg}
+		\includegraphics[scale=0.3]{artifitial_idiot.jpg}
 	\end{center}
 \end{transitionframe}
 
@@ -1369,7 +1346,7 @@ y = h \cdot W_2 = X \cdot W_1 \cdot W_2 = X \cdot A
 \begin{tikzpicture}
 \node[inner sep=0pt] (russell) at (0,0)
 {\includegraphics[width=0.95\paperwidth]{bumaga.png}};
-%\node[] at (4,3) {{\fontsize{2}{60}\selectfont Ты пидор} };
+\node[] at (4,3) {{\fontsize{5}{60}\selectfont Ты няшка!} };
 \end{tikzpicture}
 \end{center}
 \end{frame}
@@ -1562,7 +1539,7 @@ y = h \cdot W_2 = X \cdot W_1 \cdot W_2 = X \cdot A
 			\item Если $y = 0$, хотим большое $(1 - \hat p)$, получается функция потерь: 
 			
 			$$
-			\logloss = - \frac{1}{n} \sum_{i=1}^n y_i \cdot \ln \hat p + (1 - y_i) \cdot \ln (1 - \hat p)
+			\logloss = - \frac{1}{n} \sum_{i=1}^n y_i \cdot \ln \hat p_i + (1 - y_i) \cdot \ln (1 - \hat p_i)
 			$$
 		\end{wideitemize}	
 	\end{column}%
@@ -1574,7 +1551,6 @@ y = h \cdot W_2 = X \cdot W_1 \cdot W_2 = X \cdot A
 	\end{column}%
 \end{columns}
 \end{frame}
-
 
 
 \begin{frame}{Пример: два класса}
