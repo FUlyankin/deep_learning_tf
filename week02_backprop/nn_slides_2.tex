@@ -181,7 +181,7 @@
 
 \title[]{\textcolor{blue}{Глубокое обучение и вообще}}
 \author{Ульянкин Филипп}
-\date{\today}
+\date{16 февраля 2022 г. } %\today}
 
 \usepackage{ulem}
 
@@ -216,6 +216,7 @@
 \begin{frame}{Agenda}
 \begin{wideitemize}
 	\item Стохастический градиентный спуск
+	\item 50 оттенков градиентного спуска 
 	\item Эпохи, батчи, ранняя остановка
 	\item Алгоритм обратного распространения ошибки 
 \end{wideitemize} 
@@ -489,7 +490,7 @@ w_{t}=   w_{t-1}  +  0.001 \cdot   {\color{red}  2 \cdot (y_i - x_i^T w_{t-1})\c
 
 
 
-\begin{frame}{Mini-bath SGD}
+\begin{frame}{Mini-bath SGD (2018)}
 \begin{center}
 	\includegraphics[width=0.95\paperwidth]{mini_batch.png}
 \end{center}
@@ -499,7 +500,7 @@ w_{t}=   w_{t-1}  +  0.001 \cdot   {\color{red}  2 \cdot (y_i - x_i^T w_{t-1})\c
 \end{frame}
 
 
-\begin{frame}{Mini-bath SGD}
+\begin{frame}{Mini-bath SGD (2018)}
 \begin{center}
 	\includegraphics[width=0.8\paperwidth]{lec_meme.png}
 \end{center}
@@ -509,12 +510,22 @@ w_{t}=   w_{t-1}  +  0.001 \cdot   {\color{red}  2 \cdot (y_i - x_i^T w_{t-1})\c
 \end{frame}
 
 
+%\begin{frame}{Large batch optimization (2020) }
+%%\begin{center}
+%%	\includegraphics[width=0.8\paperwidth]{lec_meme.png}
+%%\end{center}
+%\vfill %
+%\footnotesize 
+%\color{blue} \url{https://arxiv.org/abs/1904.00962}
+%\end{frame}
+
+
 \begin{frame}{Скорость обучения}
 \begin{wideitemize}
 	\item Скорость обучения $\eta$ надо подбирать аккуратно, если она будет большой, мы можем скакать вокруг минимума, если маленькой - вечно ползти к нему
 	
 	\begin{center}
-		\includegraphics[width=0.4\paperwidth]{learningrates.jpg}
+		\includegraphics[width=0.37\paperwidth]{learningrates.jpg}
 	\end{center}
 \end{wideitemize}
 \end{frame}
@@ -550,11 +561,168 @@ w_{t}=   w_{t-1}  +  0.001 \cdot   {\color{red}  2 \cdot (y_i - x_i^T w_{t-1})\c
 \end{frame}
 
 
-\begin{frame}{Анонс}
-	\begin{wideitemize}
-		\item  В будущих лекциях мы более подробно обсудим все эти вызовы 
-		\item А также поговорим про более современные модификации градиентного спуска и другие эвристики, ускоряющие обучение
-	\end{wideitemize}
+\begin{transitionframe}
+	\begin{center}
+		\Huge 50 оттенков градиентного спуска
+	\end{center}
+	\centering \includegraphics[scale = 0.1]{shadows50.jpg}
+\end{transitionframe}
+
+
+\begin{frame}[fragile]{Mini-bath SGD}
+Проблема оптимизации: 
+
+\[   
+L(w) = \sum_{i=1}^n L(w, x_i, y_i) \to \min_{w}
+\]
+
+Инициализация $w_0$ 
+\mint{python}{while True:}
+\pgr{\hspace{15pt}} рандомно выбрали $m < n$ индексов \\
+\pgr{\hspace{15pt}} $g_t =\frac{1}{m}\sum_{i=1}^m  \nabla L(w, x_i, y_i)$ \\
+\pgr{\hspace{15pt}} $w_t = w _{t-1} - \eta_t \cdot g_t   $ \\
+\pgr{\hspace{15pt} if} $||w_t - w_{t-1}|| < \varepsilon:$ \\
+\pgr{\hspace{30pt} break}
+\end{frame}
+
+
+\begin{frame}[fragile]{Вызовы}
+\begin{wideitemize}
+\item Скорость обучения $\eta$ надо подбирать аккуратно, если она будет большой, мы можем скакать вокруг минимума, если маленькой - вечно ползти к нему.
+
+\begin{center}
+	\includegraphics[width=0.25\paperwidth]{learningrates.jpg}
+\end{center}
+
+\item К обновлению всех параметров применяется одна и та же скорость обучения. Возможно, что какие-то параметры приходят в оптимальную точку быстрее, и их не надо обновлять.
+\end{wideitemize}
+\end{frame}
+
+
+\begin{frame}{Momentum SGD}
+Мы считали на каждом шаге градиент по формуле  \[g_t =\frac{1}{m}\sum_{i=1}^m  \nabla L(w_{t-1}, x_i, y_i)\] После шага мы забывали его, {\color{red} давайте запоминать направление:} 
+
+\begin{equation*}
+\begin{aligned}
+h_t &= \alpha \cdot h_{t-1} + \eta \cdot g_t \\
+w_t &= w_{t-1} - h_t
+\end{aligned}	
+\end{equation*}
+
+\begin{itemize}
+\item Движение поддерживается в том же направлении
+\item Нет резких изменений направления движения
+\item Обычно $\alpha = 0.9$.
+\end{itemize}
+\vfill
+\footnotesize
+Крутой интерактив для моментума: {\color{blue} \url{https://distill.pub/2017/momentum/}}
+\end{frame}
+
+
+\begin{frame}{Momentum SGD}
+\begin{wideitemize}
+\item Бежим с горки и всё больше ускоряемся в том направлении, в котором были направлены сразу несколько предыдущих градиентов, но при этом движемся медленно там, где градиент постоянно меняется
+\item Хотелось бы не просто бежать с горы, но и хотя бы на полшага смотреть себе под ноги, чтобы внезапно не споткнуться $\Rightarrow$  \alert{давайте смотреть на градиент в будущей точке}
+\item Согласно методу моментов $\alpha \cdot h_{t-1}$ точно будет использоваться при шаге, давайте искать $\nabla L(w_{t-1} - \alpha \cdot h_{t-1})$.
+\end{wideitemize}
+\end{frame}
+
+
+\begin{frame}{Nesterov Momentum SGD}
+\begin{itemize}
+\item Мы теперь сначала прыгаем в том же направлении, в каком шли до этого, потом корректируем его (голубая траектория).
+\end{itemize}
+\begin{center}
+\includegraphics[width=.4\linewidth]{nesterov.png}
+\end{center}
+\begin{equation*}
+\begin{aligned}
+h_t &= \alpha \cdot h_{t-1} + \eta \cdot \nabla L(w_{t-1} - \alpha \cdot h_{t-1}) \\
+w_t &= w_{t-1} - h_t
+\end{aligned}	
+\end{equation*}
+\end{frame}
+
+
+\begin{frame}{Разная скорость обучения}
+\begin{wideitemize}
+\item Может сложиться, что некоторые веса уже близки к своим локальным минимумам, по этим координатам надо двигаться медленнее, а по другим быстрее $\Rightarrow$ {\color{red} адаптивные методы градиентного спуска }
+
+\item Шаг изменения должен быть меньше у тех параметров, которые в большей степени варьируются в данных, и больше у тех, которые менее изменчивы 
+\end{wideitemize}
+\end{frame}
+
+
+\begin{frame}{AdaGrad}
+\begin{equation*}
+\begin{aligned}
+G_t^j &= G_{t-1}^j + g_{tj}^2 \\
+w_t^j &= w_{t-1}^j - \frac{\eta}{\sqrt{G_t^j + \varepsilon}} \cdot g_t^j
+\end{aligned}	
+\end{equation*}
+\begin{wideitemize}
+\item  $g_t^j$ — градиент по $j-$ому параметру
+\item своя скорость обучения для каждого параметра
+\item обычно $\eta = 0.01$, т.к. параметр не очень важен
+\item $G_t^j$ всегда увеличивается, из-за этого обучение может рано останавливаться $\Rightarrow$  RMSprop
+\end{wideitemize}
+\end{frame}
+
+
+\begin{frame}{RMSprop}
+\begin{equation*}
+\begin{aligned}
+G_t^j &= \alpha \cdot G_{t-1}^j + (1 - \alpha) \cdot g_{tj}^2 \\
+w_t^j &= w_{t-1}^j - \frac{\eta_t}{\sqrt{G_t^j + \varepsilon}} \cdot g_t^j
+\end{aligned}	
+\end{equation*}
+\begin{wideitemize}
+\item Обычно $ \alpha = 0.9$
+\item Скорость обучения адаптируется к последнему сделанному шагу, бесконтрольного роста $G_t^j$ больше не происходит 
+\item RMSprop нигде не был опубликован, Хинтон просто привёл его в своей лекции, сказав, что это норм тема
+\end{wideitemize}
+\end{frame}
+
+
+\begin{frame}{Adam (Adaptive Moment Estimation)}
+\begin{wideitemize} 
+	\item Комбинируем Momentum и индивидуальные скорости обучения
+\end{wideitemize}
+\begin{equation*}
+\begin{aligned}
+h_t^j &= \frac{\beta_1 \cdot h_{t-1}^j + (1 - \beta_1) \cdot g_{tj}}{1 - \beta_1^t} \\
+G_t^j &= \frac{\beta_2 \cdot G_{t-1}^j + (1 - \beta_2) \cdot g_{tj}^2}{1 - \beta_2^t} \\
+w_t^j &= w_{t-1}^j - \frac{\eta_t}{\sqrt{G_t^j + \varepsilon}} \cdot h_t^j
+\end{aligned}	
+\end{equation*}
+\begin{wideitemize} 
+\item Фактически $h_t$ и $G_t$ это оценки первого и второго моментов для стохастического градиента
+\end{wideitemize}
+
+\end{frame}
+
+
+\begin{frame}{Сравнение на MNIST}
+\begin{center}
+\includegraphics[scale=0.4]{adam_mnist.png}
+\end{center}
+\vfill %
+\footnotesize
+{\color{blue} \url{https://arxiv.org/pdf/1412.6980.pdf}}
+\end{frame}
+
+
+
+
+\begin{frame}{Резюме по методам градиентного спуска}
+\begin{wideitemize}
+\item Momentum SGD сохраняет направление шага и позволяет добиваться более быстрой сходимости
+\item  Адаптивные методы позволяют находить индивидуальную скорость обучения для каждого параметра
+\item Adam комбинирует в себе оба подхода
+\item Давайте посмотрим \href{http://ruder.io/content/images/2016/09/contours_evaluation_optimizers.gif}{визуализацию 1} и \href{http://ruder.io/content/images/2016/09/saddle_point_evaluation_optimizers.gif}{визуализацию 2}
+\item \alert{В будущих лекциях мы продолжим разговор про то, как можно улучшить методы оптимизации нейронных сетей.} 
+\end{wideitemize}
 \end{frame}
 
 
@@ -580,7 +748,7 @@ w_{t}=   w_{t-1}  +  0.001 \cdot   {\color{red}  2 \cdot (y_i - x_i^T w_{t-1})\c
 \end{frame}
 
 
-\begin{frame}{Анонс}
+\begin{frame}{Эпохи и батчи}
 	\begin{center}
 		\includegraphics[width=.95\linewidth]{epoch_batch.png}
 	\end{center}
@@ -701,7 +869,7 @@ w_{t}=   w_{t-1}  +  0.001 \cdot   {\color{red}  2 \cdot (y_i - x_i^T w_{t-1})\c
 \begin{equation*} 
 \begin{aligned} 
 \frac{\partial L}{\partial W_2} &=   { \only<2>{ \color{red}} - (y - f(X \cdot W_1) \cdot W_2) } \cdot f(X \cdot W_1) \\
-\frac{\partial L}{\partial W_1} &= { \only<2>{ \color{red}}  - (y - f(X \cdot W_1) \cdot W_2) } \cdot W_2 f'(X \cdot W_1) \cdot W_1 
+\frac{\partial L}{\partial W_1} &= { \only<2>{ \color{red}}  - (y - f(X \cdot W_1) \cdot W_2) } \cdot W_2 f'(X \cdot W_1) \cdot X 
 \end{aligned}
 \end{equation*}
 
@@ -929,19 +1097,19 @@ w_{t}=   w_{t-1}  +  0.001 \cdot   {\color{red}  2 \cdot (y_i - x_i^T w_{t-1})\c
 	\only<3>{ 
 		\draw [->, dashed, ultra thick, blue]  (fourth) to (third_1);
 		\draw [->, dashed, ultra thick, amethyst]  (third_1) to (second_2);
-		\draw [->, dashed, ultra thick, red]  (second_2) to (first_1);
+		\draw [->, dashed, ultra thick, green]  (second_2) to (first_1);
 	}
 
 	\only<4>{ 
 		\draw [->, dashed, ultra thick, blue]  (fourth) to (third_2);
-		\draw [->, dashed, ultra thick, amethyst]  (third_2) to (second_1);
+		\draw [->, dashed, ultra thick, junglegreen]  (third_2) to (second_1);
 		\draw [->, dashed, ultra thick, red]  (second_1) to (first_1);
 	}
 
 	\only<5>{ 
 		\draw [->, dashed, ultra thick, blue]  (fourth) to (third_2);
-		\draw [->, dashed, ultra thick, amethyst]  (third_2) to (second_2);
-		\draw [->, dashed, ultra thick, red]  (second_2) to (first_1);
+		\draw [->, dashed, ultra thick, junglegreen]  (third_2) to (second_2);
+		\draw [->, dashed, ultra thick, green]  (second_2) to (first_1);
 	}
 	
 	\end{tikzpicture}
@@ -1207,7 +1375,7 @@ w_1^t = w_1^{t-1} - \gamma \cdot \frac{\partial L}{\partial w_1} (w_1^{t-1})
 \begin{equation*} 
 \begin{aligned}
 	\only<1-6>{ & 3: \quad  {\color{blue} \frac{\partial y}{\partial h_2} \qquad \frac{\partial y}{\partial h_1}} \\} 
-	\only<2-6>{& 2: \quad \frac{\partial y}{\partial z_1} = {\color{blue} \frac{\partial y}{\partial h_1}} \cdot {\color{amethyst} \frac{\partial h_1}{\partial z_1}} + \frac{\partial y}{\partial h_2} \cdot {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}   \qquad  \frac{\partial y}{\partial z_2} =  {\color{blue} \frac{\partial y}{\partial h_1}} \cdot {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  + {\color{blue} \frac{\partial y}{\partial h_2}} \cdot {\color{junglegreen} \frac{\partial h_2}{\partial z_2}} \\} 
+	\only<2-6>{& 2: \quad \frac{\partial y}{\partial z_1} = {\color{blue} \frac{\partial y}{\partial h_1}} \cdot {\color{amethyst} \frac{\partial h_1}{\partial z_1}} + \frac{\partial y}{\partial h_2} \cdot {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}   \qquad  \frac{\partial y}{\partial z_2} =  {\color{blue} \frac{\partial y}{\partial h_1}} \cdot {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  + {\color{blue} \frac{\partial y}{\partial h_2}} \cdot {\color{junglegreen} \frac{\partial h_2}{\partial z_2}} \\} 
 	\only<3>{& 1: \quad \frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}    +    {\color{blue} \frac{\partial y}{\partial h_2}}   {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}      +  {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}     +             {\color{blue} \frac{\partial y}{\partial h_2}}  {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}} \\ }  
 	\only<4>{& 1: \quad \frac{\partial y}{\partial x_1} = \left( {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_1}}    + {\color{blue} \frac{\partial y}{\partial h_2}}   {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}  \right) \cdot {\color{red} \frac{\partial z_1}{\partial x_1}}  + \left( {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_2}} +    {\color{blue} \frac{\partial y}{\partial h_2}}  {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}  \right) \cdot {\color{green} \frac{\partial z_2}{\partial x_1}} \\  }
 	\only<5>{& 1: \quad \frac{\partial y}{\partial x_1} =  \frac{\partial y}{\partial z_1} \cdot {\color{red} \frac{\partial z_1}{\partial x_1}}  + \frac{\partial y}{\partial z_2} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}} \\  }
@@ -1526,7 +1694,7 @@ Backward pass:
 	\end{equation*}
 	
 	\[ 
-	z  = x W 
+	Z  = X W 
 	\]
 
 \only<1>{	
@@ -1537,38 +1705,38 @@ Backward pass:
 	\]
 	}
 
-\only<2>{	
-	\item Нужная нам производная - матрица: 
-	
-	\begin{equation*}
-		\frac{\partial L}{\partial W} =  \begin{pmatrix}   \frac{\partial L}{\partial w_{11}} & \frac{\partial L}{\partial w_{12}} \\ \frac{\partial L}{\partial w_{21}} & \frac{\partial L}{\partial w_{22}} \\ \frac{\partial L}{\partial w_{31}} & \frac{\partial L}{\partial w_{32}} \\  \end{pmatrix}
-	\end{equation*}
-}
+%\only<2>{	
+%	\item Нужная нам производная - матрица: 
+%	
+%	\begin{equation*}
+%		\frac{\partial L}{\partial W} =  \begin{pmatrix}   \frac{\partial L}{\partial w_{11}} & \frac{\partial L}{\partial w_{12}} \\ \frac{\partial L}{\partial w_{21}} & \frac{\partial L}{\partial w_{22}} \\ \frac{\partial L}{\partial w_{31}} & \frac{\partial L}{\partial w_{32}} \\  \end{pmatrix}
+%	\end{equation*}
+%}
 \end{wideitemize}
 \end{frame}
 
 
-\begin{frame}{Полносвязный слой: обратный проход (backward pass)}
-\begin{wideitemize}
-	\item Применим цепное правило: 
-	
-	\[
-	\frac{\partial L}{\partial w_{ij}} =  \sum_k \frac{\partial L}{\partial z_k} \cdot \frac{\partial z_k}{\partial w_{ij}} =   \frac{\partial L}{\partial z_j} \cdot x_i
-	\]
-	
-	\[
-	z_j = x_1 w_{1j} + x_2 w_{2j} + x_3 w_{3j} 
-	\]
-	
-	\only<2>{
-	\item перепишем в матричном виде: 
-	
-	\[
-	\frac{\partial L}{\partial W} = \begin{pmatrix}  x_1 \\ x_2 \\ x_3 \end{pmatrix}  \cdot  \begin{pmatrix}  \frac{\partial L}{\partial z_1}  &  \frac{\partial L}{\partial z_2} \end{pmatrix} = x^T \cdot \frac{\partial L}{\partial z}
-	\]
-	}
-\end{wideitemize}
-\end{frame}
+%\begin{frame}{Полносвязный слой: обратный проход (backward pass)}
+%\begin{wideitemize}
+%	\item Применим цепное правило: 
+%	
+%	\[
+%	\frac{\partial L}{\partial w_{ij}} =  \sum_k \frac{\partial L}{\partial z_k} \cdot \frac{\partial z_k}{\partial w_{ij}} =   \frac{\partial L}{\partial z_j} \cdot x_i
+%	\]
+%	
+%	\[
+%	z_j = x_1 w_{1j} + x_2 w_{2j} + x_3 w_{3j} 
+%	\]
+%	
+%	\only<2>{
+%	\item перепишем в матричном виде: 
+%	
+%	\[
+%	\frac{\partial L}{\partial W} = \begin{pmatrix}  x_1 \\ x_2 \\ x_3 \end{pmatrix}  \cdot  \begin{pmatrix}  \frac{\partial L}{\partial z_1}  &  \frac{\partial L}{\partial z_2} \end{pmatrix} = x^T \cdot \frac{\partial L}{\partial z}
+%	\]
+%	}
+%\end{wideitemize}
+%\end{frame}
 
 
 \begin{frame}[fragile]{Полносвязный слой в numpy}
@@ -1591,9 +1759,9 @@ Backward pass:
 
 \begin{columns}
 \begin{column}{.49\textwidth}
-{\color{green} def}  {\color{blue} forward\_pass}(X, W, dZ):  \\
-\mbox{ } \hspace{5mm} dX = dZ.dot(W.T) \\
-\mbox{ } \hspace{5mm} dW = X.T.dot(dZ) \\
+{\color{green} def}  {\color{blue} forward\_pass}(X, W, in\_grad):  \\
+\mbox{ } \hspace{5mm} dX = in\_grad.dot(W.T) \\
+\mbox{ } \hspace{5mm} dW = X.T.dot(in\_grad) \\
 \mbox{ } \hspace{5mm} {\color{green} return } dX, dW
 \end{column}
 \begin{column}{.49\textwidth}
@@ -1602,6 +1770,9 @@ Backward pass:
 \[ \frac{\partial L}{\partial W}  =  X^T \cdot \frac{\partial L}{\partial Z} \]
 \end{column}
 \end{columns}
+\begin{center}
+	\alert{Эти формулы мы получим на семинаре}
+\end{center}
 \end{frame}
 
 
@@ -1655,12 +1826,12 @@ Backward pass:
 		\draw [->, dashed]   (o1) -- (h1) node[pos=.49, above] {$\frac{\partial O_1}{\partial H_1}$} ;
 		\draw [->, dashed]   (h2) -- (o1) node[pos=.49, above] {$\frac{\partial H_2}{\partial O_1}$} ;
 		\draw [->, dashed]   (o2) -- (h2) node[pos=.49, above] {$\frac{\partial O_2}{\partial H_2}$} ;
-		\draw [->, dashed]   (output) -- (o2)node[pos=.49, above] {$\frac{\partial H_3}{\partial O_2}$} ;
+		\draw [->, dashed]   (output) -- (o2)node[pos=.49, above] {$\frac{\partial \hat{y}}{\partial O_2}$} ;
 		\draw [->, dashed]  (mse) -- (output) node[pos=.49, above] {$\frac{\partial MSE}{\partial \hat{y} }$} ;	
 		
-		\draw [->, dashed]  (9, -0.05) -- (9, -1.2)  node[pos=.49, right] {$\frac{\partial H_3}{\partial W_3} = O_2$} ;
-		\draw [->, dashed]  (5, -0.05) -- (5, -1.2)  node[pos=.49, right] {$\frac{\partial H_2}{\partial W_2} = O_1$} ;
-		\draw [->, dashed]  (1, -0.05) -- (1, -1.2)  node[pos=.49, right] {$\frac{\partial H_1}{\partial W_1} = X$} ;
+		\draw [->, dashed]  (9, -0.05) -- (9, -1.2)  node[pos=.49, right] {$\frac{\partial \hat{y}}{\partial W_3} = O_2^T$} ;
+		\draw [->, dashed]  (5, -0.05) -- (5, -1.2)  node[pos=.49, right] {$\frac{\partial H_2}{\partial W_2} = O_1^T$} ;
+		\draw [->, dashed]  (1, -0.05) -- (1, -1.2)  node[pos=.49, right] {$\frac{\partial H_1}{\partial W_1} = X^T$} ;
 	\end{tikzpicture}
 \end{center}
 \end{frame}
@@ -1704,16 +1875,16 @@ Backward pass:
 	\draw node at (10, 0) (output) {$\hat{y}$};
 	\draw node at (12, 0) (mse) {$MSE$};
 	
-	\draw [->, dashed]   (h1)  -- (input) node[pos=.49, above] {\scriptsize $W_1$} ;
+	\draw [->, dashed]   (h1)  -- (input) node[pos=.49, above] {\scriptsize $W_1^T$} ;
 	\draw [->, dashed]   (o1) -- (h1) node[pos=.49, above] {\scriptsize $O_1 (1-O_1)$} ;
-	\draw [->, dashed]   (h2) -- (o1) node[pos=.49, above] {\scriptsize $W_2$} ;
+	\draw [->, dashed]   (h2) -- (o1) node[pos=.49, above] {\scriptsize $W_2^T$} ;
 	\draw [->, dashed]   (o2) -- (h2) node[pos=.49, above] {\scriptsize $O_2 (1 - O_2)$} ;
-	\draw [->, dashed]   (output) -- (o2)node[pos=.49, above] {\scriptsize $W_3$} ;
+	\draw [->, dashed]   (output) -- (o2)node[pos=.49, above] {\scriptsize $W_3^T$} ;
 	\draw [->, dashed]  (mse) -- (output) node[pos=.49, above] {\scriptsize $-2(\hat{y} - y)$} ;	
 	
-	\draw [->, dashed]  (9, -0.05) -- (9, -1.2)  node[pos=.49, right] {$O_2$} ;
-	\draw [->, dashed]  (5, -0.05) -- (5, -1.2)  node[pos=.49, right] {$O_1$} ;
-	\draw [->, dashed]  (1, -0.05) -- (1, -1.2)  node[pos=.49, right] {$X$} ;
+	\draw [->, dashed]  (9, -0.05) -- (9, -1.2)  node[pos=.49, right] {$O_2^T$} ;
+	\draw [->, dashed]  (5, -0.05) -- (5, -1.2)  node[pos=.49, right] {$O_1^T$} ;
+	\draw [->, dashed]  (1, -0.05) -- (1, -1.2)  node[pos=.49, right] {$X^T$} ;
 	\end{tikzpicture}
 \end{center}
 \end{frame}
@@ -1750,34 +1921,34 @@ Backward pass:
 		\draw node at (12, 0) (mse) {\color{red} $MSE$};	
 	}
 		
-	\draw [->, dashed]   (output) -- (o2)node[pos=.49, above] {\scriptsize $W_3$} ;
+	\draw [->, dashed]   (output) -- (o2)node[pos=.49, above] {\scriptsize $W_3^T$} ;
 	\draw [->, dashed]  (mse) -- (output) node[pos=.49, above] {\scriptsize $-2(\hat{y} - y)$} ;	
-	\draw [->, dashed]  (9, -0.05) -- (9, -1.2)  node[pos=.49, right] {$O_2$} ;
+	\draw [->, dashed]  (9, -0.05) -- (9, -1.2)  node[pos=.49, right] {$O_2^T$} ;
 		
 	\only<1>{ 
-		\draw [->, dashed, red]   (output) -- (o2)node[pos=.49, above] {\color{red} \scriptsize $W_3$} ;
+		\draw [->, dashed, red]   (output) -- (o2)node[pos=.49, above] {\color{red} \scriptsize $W_3^T$} ;
 		\draw [->, dashed, red]  (mse) -- (output) node[pos=.49, above] {\color{red} \scriptsize $-2(\hat{y} - y)$} ;	
-		\draw [->, dashed, red]  (9, -0.05) -- (9, -1.2)  node[pos=.49, right] {\color{red} $O_2$} ;
+		\draw [->, dashed, red]  (9, -0.05) -- (9, -1.2)  node[pos=.49, right] {\color{red} $O_2^T$} ;
 	}
 
-	\draw [->, dashed]   (h2) -- (o1) node[pos=.49, above] {\scriptsize $W_2$} ;
+	\draw [->, dashed]   (h2) -- (o1) node[pos=.49, above] {\scriptsize $W_2^T$} ;
 	\draw [->, dashed]   (o2) -- (h2) node[pos=.49, above] {\scriptsize $O_2 (1 - O_2)$} ;
-	\draw [->, dashed]  (5, -0.05) -- (5, -1.2)  node[pos=.49, right] {$O_1$} ;
+	\draw [->, dashed]  (5, -0.05) -- (5, -1.2)  node[pos=.49, right] {$O_1^T$} ;
 	
 	\only<2>{ 
-		\draw [->, dashed, red]   (h2) -- (o1) node[pos=.49, above] {\color{red} \scriptsize $W_2$} ;
+		\draw [->, dashed, red]   (h2) -- (o1) node[pos=.49, above] {\color{red} \scriptsize $W_2^T$} ;
 		\draw [->, dashed, red]   (o2) -- (h2) node[pos=.49, above] {\color{red} \scriptsize $O_2 (1 - O_2)$} ;
-		\draw [->, dashed, red]  (5, -0.05) -- (5, -1.2)  node[pos=.49, right] {\color{red} $O_1$} ;
+		\draw [->, dashed, red]  (5, -0.05) -- (5, -1.2)  node[pos=.49, right] {\color{red} $O_1^T$} ;
 	}
 
-	\draw [->, dashed]   (h1)  -- (input) node[pos=.49, above] {\scriptsize $W_1$} ;
+	\draw [->, dashed]   (h1)  -- (input) node[pos=.49, above] {\scriptsize $W_1^T$} ;
 	\draw [->, dashed]   (o1) -- (h1) node[pos=.49, above] {\scriptsize $O_1 (1-O_1)$} ;
-	\draw [->, dashed]  (1, -0.05) -- (1, -1.2)  node[pos=.49, right] {$X$} ;
+	\draw [->, dashed]  (1, -0.05) -- (1, -1.2)  node[pos=.49, right] {$X^T$} ;
 
 	\only<3>{ 
-		\draw [->, dashed, red]   (h1)  -- (input) node[pos=.49, above] {\color{red} \scriptsize $W_1$} ;
+		\draw [->, dashed, red]   (h1)  -- (input) node[pos=.49, above] {\color{red} \scriptsize $W_1^T$} ;
 		\draw [->, dashed, red]   (o1) -- (h1) node[pos=.49, above] {\color{red} \scriptsize $O_1 (1-O_1)$} ;
-		\draw [->, dashed, red]  (1, -0.05) -- (1, -1.2)  node[pos=.49, right] {\color{red} $X$} ;
+		\draw [->, dashed, red]  (1, -0.05) -- (1, -1.2)  node[pos=.49, right] {\color{red} $X^T$} ;
 	}	
 	\end{tikzpicture}
 \end{center}
@@ -1790,32 +1961,49 @@ Backward pass:
 		\begin{equation*} 
 			\begin{aligned}
 				&  d = -2 (\hat{y} - y) \\
-				&  \frac{\partial MSE}{\partial W_3} = d \cdot O_2  \\
+				&  \frac{\partial MSE}{\partial W_3} = O_2^T \cdot d    \\
 			\end{aligned}
 		\end{equation*}
 	\end{column}
 	\begin{column}{.3\textwidth}
-		\only<2-3>{
+		\only<2-4>{
 		\alert{Шаг 2:}
 		\begin{equation*} 
 			\begin{aligned}
-				&  d = d \cdot W_3 \cdot O_2 \cdot (1 - O_2)  \\
-				&  \frac{\partial MSE}{\partial W_2} = d \cdot O_1 \\
+				&  d = d \cdot W_3^T * O_2 * (1 - O_2)  \\
+				&  \frac{\partial MSE}{\partial W_2} = O_1^T \cdot d \\
 			\end{aligned}
 		\end{equation*}}
 	\end{column}
 	\begin{column}{.35\textwidth}
-		\only<3>{
+		\only<3-4>{
 		\alert{Шаг 3:}
 		\begin{equation*} 
 		\begin{aligned}
-		&  d = d \cdot W_2 \cdot O_1 \cdot (1 - O_1)  \\
-		&  \frac{\partial MSE}{\partial W_1} = d \cdot X \\
+		&  d = d \cdot W_2^T * O_1 * (1 - O_1)  \\
+		&  \frac{\partial MSE}{\partial W_1} = X^T \cdot d \\
 		\end{aligned}
 		\end{equation*}}
 	\end{column}
 \end{columns}
 
+\vfill
+
+\only<4>{  \alert{  Шаг SGD:}
+{\footnotesize
+\begin{columns}
+	\begin{column}{.28\textwidth}
+			\[  W_3^t = W_3^{t-1} - \eta \cdot \frac{\partial MSE}{\partial W_3}  \]
+	\end{column}
+	\begin{column}{.3\textwidth}
+			\[  W_2^t = W_2^{t-1} - \eta \cdot \frac{\partial MSE}{\partial W_2}  \]
+	\end{column}
+	\begin{column}{.35\textwidth}
+			\[  W_1^t = W_1^{t-1} - \eta \cdot \frac{\partial MSE}{\partial W_1}  \]
+	\end{column}
+\end{columns} 
+	}
+}
 \end{frame}
 
 
