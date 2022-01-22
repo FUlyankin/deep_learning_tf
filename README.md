@@ -11,7 +11,9 @@
 
 - [Таблица с оценками](https://docs.google.com/spreadsheets/d/1mUsu8Ct5lqSPj0JeXoykgbGZqL2ZJ68rZ2RyED6TFFY/edit?usp=sharing)
 - Видео записи семинаров и лекций (ссылка появиться чуть позже) 
-- Любые вопросы можно задать в чат курса [![TG1](https://img.shields.io/badge/Telegram-DL--chat-blue)](https://t.me/+6Y73OUX5PWlhYTEy), все важные объявлеия будут публиковаться в канале курса, [![TG2](https://img.shields.io/badge/Telegram-DL--announcement-blue)](https://t.me/+SMLy0Mk7OKkwODcy). Жми кнопку и попадёшь в них.
+- Любые вопросы можно задать в чат курса, все важные объявлеия будут публиковаться в канале курса. Жми кнопки ниже и попадёшь в них.
+
+[![TG1](https://img.shields.io/badge/Telegram-DL--chat-blue)](https://t.me/+6Y73OUX5PWlhYTEy) [![TG2](https://img.shields.io/badge/Telegram-DL--announcement-blue)](https://t.me/+SMLy0Mk7OKkwODcy)
 
 
 ## Идеология курса 
