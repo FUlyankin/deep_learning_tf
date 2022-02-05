@@ -2,7 +2,7 @@
 \documentclass[notes,12pt, aspectratio=169]{beamer}
 
 \usepackage{amsmath,amsfonts,amssymb,amsthm,mathtools}  % пакеты для математики
-\usepackage{minted}
+%\usepackage{minted}
 
 \usepackage[english, russian]{babel} % выбор языка для документа
 \usepackage[utf8]{inputenc} % задание utf8 кодировки исходного tex файла
@@ -1510,29 +1510,10 @@ y = h \cdot W_2 = X \cdot W_1 \cdot W_2 = X \cdot A
 \end{frame}
 
 
-%  Хардовый вариант
-%\begin{frame}{Функция потерь}
-%\begin{equation*} 
-%\begin{aligned}
-%L(w) &=P(y_1, \ldots, y_n \mid X, w) =  \\ 
-%&= P(y_1 \mid X,w) \cdot \ldots \cdot P(y_n \mid X, w) =  \\ 
-%&= p^{\sum y_i} \cdot (1-p)^{n - \sum y_i} \to \max_{w} \\ 
-%\mbox{ } \\  \pause 
-%\ln L(w) & = \sum y_i \cdot \ln p + \sum(1 - y_i) \cdot \ln(1-p) = \\ 
-%&= \sum [ y_i \cdot \ln p + (1 - y_i) \cdot \ln(1-p)] \to \max_{w} \\
-%\mbox{ } \\  \pause 
-%\logloss(w) & = -\ln L(w) = - \sum [ y_i \cdot \ln p + (1 - y_i) \cdot \ln(1-p)]  \to \min_{w}  \\  \pause 
-%p &= P(y_i = 1 \mid X, w) =  \sigma(x_i^T w) = \frac{1}{1 + e^{-x_i^T w}}  \\ 
-%\mbox{ } \\ 
-%\end{aligned}
-%\end{equation*}
-%\end{frame}
-
-
 % Простой вариант 
 \begin{frame}{Функция потерь}
 	\begin{columns}[T] %
-	\begin{column}{.5\textwidth}
+	\begin{column}{.49\textwidth}
 		\begin{wideitemize}
 			\item Наши $y$ принимают значения $0$ и $1$ 
 			\item Если $y = 1$, хотим большое $\hat p = \hat P(y = 1)$, но чем ближе $\hat p$ к $1$, тем меньше хотим его увеличить 
@@ -1544,7 +1525,7 @@ y = h \cdot W_2 = X \cdot W_1 \cdot W_2 = X \cdot A
 		\end{wideitemize}	
 	\end{column}%
 	\hfill%
-	\begin{column}{.5\textwidth}
+	\begin{column}{.49\textwidth}
 		\begin{center}
 			\includegraphics[width= 0.95\linewidth]{log_loss_05.png}
 		\end{center}
@@ -1624,24 +1605,42 @@ y = h \cdot W_2 = X \cdot W_1 \cdot W_2 = X \cdot A
 \end{frame}
 
 
-%\begin{frame}{Важный нюанс}
-%\begin{wideitemize} 
-%\item При поиске Softmax мы ищем экспоненты, в памяти компьютера может произойти переполнение из-за больших чисел
-%
-%\item  Если добавить ко всем входам нейронки одинаковую константу, значение Sofrmax не изменится: 
-%
-%\[ 
-%\frac{e^{z_i + c}}{\sum_{k=1}^K e^{z_k + c}} = \frac{ e^c \cdot e^{z_i } }{e^c \cdot \sum_{k=1}^K e^{z_k} }   = 	\frac{e^{z_i}}{\sum_{k=1}^K e^{z_k }} 
-%\] 
-%
-%\item  Обычно считают устойчивый к переполнению Softmax: 
-%
-%\[
-%\Softmax(z_1, \ldots, z_{K}) = \Softmax(z_1 - \max_i (z_i), \ldots, z_{K} - \max_i (z_i))
-%\]
-%
-%\end{wideitemize}
+\begin{frame}{Важный нюанс}
+	\begin{wideitemize} 
+			\item При поиске Softmax мы ищем экспоненты, в памяти компьютера может произойти переполнение из-за больших чисел
+			
+			\item  Если добавить ко всем входам нейронки одинаковую константу, значение Sofrmax не изменится: 
+			
+			\[ 
+			\frac{e^{z_i + c}}{\sum_{k=1}^K e^{z_k + c}} = \frac{ e^c \cdot e^{z_i } }{e^c \cdot \sum_{k=1}^K e^{z_k} }   = 	\frac{e^{z_i}}{\sum_{k=1}^K e^{z_k }} 
+			\] 
+			
+			\item  Обычно считают устойчивый к переполнению Softmax: 
+			
+			\[
+			\Softmax(z_1, \ldots, z_{K}) = \Softmax(z_1 - \max_i (z_i), \ldots, z_{K} - \max_i (z_i))
+			\]
+	\end{wideitemize}
+\end{frame}
+
+
+%\begin{frame}{Функция потерь и правдоподобие}
+%	\begin{equation*} 
+%		\begin{aligned}
+%			L(w) &=P(y_1, \ldots, y_n \mid X, w) =  \\ 
+%			&= P(y_1 \mid X,w) \cdot \ldots \cdot P(y_n \mid X, w) =  \\ 
+%			&= p^{\sum y_i} \cdot (1-p)^{n - \sum y_i} \to \max_{w} \\ 
+%			\mbox{ } \\  \pause 
+%			\ln L(w) & = \sum y_i \cdot \ln p + \sum(1 - y_i) \cdot \ln(1-p) = \\ 
+%			&= \sum [ y_i \cdot \ln p + (1 - y_i) \cdot \ln(1-p)] \to \max_{w} \\
+%			\mbox{ } \\  \pause 
+%			\logloss(w) & = -\ln L(w) = - \sum [ y_i \cdot \ln p + (1 - y_i) \cdot \ln(1-p)]  \to \min_{w}  \\  \pause 
+%			p &= P(y_i = 1 \mid X, w) =  \sigma(x_i^T w) = \frac{1}{1 + e^{-x_i^T w}}  \\ 
+%			\mbox{ } \\ 
+%		\end{aligned}
+%	\end{equation*}
 %\end{frame}
+
 
 
 \begin{frame}{Нейросети -  конструктор LEGO}
