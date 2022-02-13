@@ -210,7 +210,7 @@
 
 \begin{frame}
 \maketitle
-\centering \textbf{\color{blue} Посиделка 2:}  Алгоритм обратного распространения ошибки
+\centering \textbf{\color{blue} Посиделка 2:}  50 оттенков градиентного спуска
 \end{frame}
 
 \begin{frame}{Agenda}
@@ -218,7 +218,6 @@
 	\item Стохастический градиентный спуск
 	\item 50 оттенков градиентного спуска 
 	\item Эпохи, батчи, ранняя остановка
-	\item Алгоритм обратного распространения ошибки 
 \end{wideitemize} 
 \end{frame}
 
@@ -294,7 +293,7 @@ L(w) = \sum_{i=1}^n L(w, x_i, y_i) \to \min_{w}
 
 \item  Другой вариант: $$ || \nabla L(w_t) || < \varepsilon $$
 
-\item Обычно в глубинном обучении: останавливаемся, когда ошибка на тестовой выборке перестаёт убывать 
+\item Обычно в глубоком обучении: останавливаемся, когда ошибка на валидационной выборке перестаёт убывать 
 \end{wideitemize}
 \end{frame}
 
@@ -869,7 +868,7 @@ w_t^j &= w_{t-1}^j - \frac{\eta_t}{\sqrt{G_t^j + \varepsilon}} \cdot h_t^j
 \begin{equation*} 
 \begin{aligned} 
 \frac{\partial L}{\partial W_2} &=   { \only<2>{ \color{red}} - (y - f(X \cdot W_1) \cdot W_2) } \cdot f(X \cdot W_1) \\
-\frac{\partial L}{\partial W_1} &= { \only<2>{ \color{red}}  - (y - f(X \cdot W_1) \cdot W_2) } \cdot W_2 f'(X \cdot W_1) \cdot X 
+\frac{\partial L}{\partial W_1} &= { \only<2>{ \color{red}}  - (y - f(X \cdot W_1) \cdot W_2) } \cdot W_2 \cdot  f'(X \cdot W_1) \cdot X 
 \end{aligned}
 \end{equation*}
 
@@ -887,1149 +886,1151 @@ w_t^j &= w_{t-1}^j - \frac{\eta_t}{\sqrt{G_t^j + \varepsilon}} \cdot h_t^j
 	\end{center}
 \end{frame}
 
-
-\begin{frame}{Цепное правило}
-	\begin{wideitemize}
-		\item  Возьмём сложную функцию: 
-		
-		\begin{equation*}
-		\begin{aligned}
-		& z_1 = z_1(x_1, x_2) \\  & z_2 = z_2(x_1, x_2) \\  & y = y(z_1, z_2)
-		\end{aligned}
-		\end{equation*} 
-		
-		\item Производную такой функции можно найти по цепному правилу: 
-		
-		$$
-		\frac{\partial y}{\partial x_1} = {\color{amethyst} \frac{\partial y}{\partial z_1}} \cdot {\color{red} \frac{\partial z_1}{\partial x_1}} + {\color{junglegreen} \frac{\partial y}{\partial z_2}} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}}
-		$$ 
-	\end{wideitemize}
-\end{frame} 
-
-
-\begin{frame}{Как считать производные?}
-\begin{columns}
-	\begin{column}{0.6\textwidth}
-\begin{center}
-	\begin{tikzpicture}
-	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
-	
-	% Input
-	\foreach \x in {1,...,2}
-	\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
-	
-	% Hidden 1
-	\foreach \x in {1,...,2}
-	\node at (3, -\x*1.5) [place] (second_\x){$z_\x$};		
-		
-	% Output
-	\node at (6, -2.25) [place] (fourth){$y$};
-	
-	\draw [->, red]  (first_1) to (second_1);
-	\draw [->, green]  (first_1) to (second_2);
-	\draw [->]  (first_2) to (second_1);
-	\draw [->]  (first_2) to (second_2);
-	
-	\draw [->, amethyst]  (second_1) to (fourth);
-	\draw [->, junglegreen]  (second_2) to (fourth);
-	\end{tikzpicture}
-	\vfill
-	\begin{tikzpicture}
-	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
-	
-	% Input
-	\foreach \x in {1,...,2}
-	\draw node at (0, -\x*1.5) [place] (second_\x) {$x_\x$};
-	
-	% Hidden 1
-	\foreach \x in {1,...,2}
-	\node at (3, -\x*1.5) [place] (first_\x){$z_\x$};		
-	
-	% Output
-	\node at (6, -2.25) [place] (fourth){$y$};
-	
-	\draw [->, dashed, red]  (first_1) to (second_1) node[right=1.cm] {$\frac{\partial z_1}{\partial x_1}$} ;
-	\draw [->, dashed]  (first_1) to (second_2) node[right=1.cm,above] {$\frac{\partial z_1}{\partial x_2}$} ;
-	\draw [->, dashed, green]  (first_2) to (second_1) node[right=2.3cm, below] {$\frac{\partial z_2}{\partial x_1}$} ;
-	\draw [->, dashed]  (first_2) to (second_2) node[right=1.2cm] {$\frac{\partial z_2}{\partial x_2}$} ;
-	
-	\draw [->, dashed, amethyst] (fourth)  to (first_1) node[right=1.cm] {$\frac{\partial y}{\partial z_1}$} ;
-	\draw [->, dashed, junglegreen] (fourth) to (first_2) node[right=1.cm] {$\frac{\partial y}{\partial z_2}$} ;
-	\end{tikzpicture}
-\end{center}
-\end{column}
-\begin{column}{0.4\textwidth}
-\textbf{Граф вычислений: }
-\begin{equation*} 
-\begin{aligned}
-	& z_1 = z_1(x_1, x_2)\\
-	& z_2 = z_2(x_1, x_2) \\
-	& y = y(z_1, z_2) 
-\end{aligned}
-\end{equation*} 
-\vfill 
-\only<1>{
-\alert{Из него можно построить граф производных, каждому ребру будет приписана производная}}
-
-\only<2>{\textbf{Можно догадаться как работает цепное правило:}
-	\[\frac{\partial y}{\partial x_1} = {\color{amethyst} \frac{\partial y}{\partial z_1}} \cdot {\color{red} \frac{\partial z_1}{\partial x_1}} + {\color{junglegreen} \frac{\partial y}{\partial z_2}} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}} \]
-}
-\end{column}
-\end{columns}
-\end{frame} 
-
-
-
-\begin{frame}{Пойдём глубже}
-
-\begin{center}
-	\begin{tikzpicture}
-	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
-	
-	% Input
-	\foreach \x in {1,...,2}
-	\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
-	
-	% Hidden 1
-	\foreach \x in {1,...,2}
-	\node at (3, -\x*1.5) [place] (second_\x){$z_\x$};		
-	
-	% Hidden 2
-	\foreach \x in {1,...,2}
-	\node at (6, -\x*1.5) [place] (third_\x){$h_\x$};	
-	
-	% Output
-	\node at (9, -2.25) [place] (fourth){$y$};
-	
-	\draw [->, red]  (first_1) to (second_1);
-	\draw [->, green]  (first_1) to (second_2);
-	\draw [->, red]  (first_2) to (second_1);
-	\draw [->, green]  (first_2) to (second_2);
-	
-	\draw [->, amethyst]  (second_1) to (third_1);
-	\draw [->, junglegreen]  (second_1) to (third_2);
-	\draw [->, amethyst]  (second_2) to (third_1);
-	\draw [->, junglegreen]  (second_2) to (third_2);
-	
-	\draw [->, blue]  (third_1) to (fourth);
-	\draw [->, blue]  (third_2) to (fourth);
-
-	\end{tikzpicture}
-\end{center}
-
-\only<1>{
-\begin{equation*} 
-	\begin{aligned}
-		z_1 = z_1({\color{red} x_1, x_2})  & \quad   h_1 = h_1({\color{amethyst} z_1, z_2}) & \quad y = y({\color{blue} h_1, h_2}) \\
-		z_2 = z_2({\color{green} x_1, x_2}) & \quad h_2 = h_2({\color{junglegreen} z_1, z_2}) &  
-	\end{aligned}
-\end{equation*} }
-
-\only<2>{
-\[ \frac{\partial y}{\partial x_1} = ?  \]	
-}
-
-\only<3>{
-	\[ \frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}} \cdot  \frac{\partial h_1}{\partial x_1} + {\color{blue} \frac{\partial y}{\partial h_2}} \cdot \frac{\partial h_2}{\partial x_1}   \]	
-}
-
-\only<4>{
-	\[ \frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}} \cdot  \boxed{ \frac{\partial h_1}{\partial x_1}  } + {\color{blue} \frac{\partial y}{\partial h_2}} \cdot \boxed{ \frac{\partial h_2}{\partial x_1} }  \]	
-}
-
-\only<5>{
-	\[ \frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}} \cdot \underbrace{ \boxed{ \frac{\partial h_1}{\partial x_1}  }  }_{ {\color{amethyst} \frac{\partial h_1}{\partial z_1}} \cdot {\color{red} \frac{\partial z_1}{\partial x_1}} + {\color{amethyst} \frac{\partial h_1}{\partial z_2}} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}}  }  + {\color{blue} \frac{\partial y}{\partial h_2}} \cdot \underbrace{\boxed{ \frac{\partial h_2}{\partial x_1} } }_{ {\color{junglegreen} \frac{\partial h_2}{\partial z_1}} \cdot {\color{red} \frac{\partial z_1}{\partial x_1}} + {\color{junglegreen} \frac{\partial h_2}{\partial z_2}} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}}  } \]	
-}
-
-
-\only<6>{
-	\[ \frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}} \cdot \left( {\color{amethyst} \frac{\partial h_1}{\partial z_1}} \cdot {\color{red} \frac{\partial z_1}{\partial x_1}} + {\color{amethyst} \frac{\partial h_1}{\partial z_2}} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}}  \right)  + {\color{blue} \frac{\partial y}{\partial h_2}} \cdot \left( {\color{junglegreen} \frac{\partial h_2}{\partial z_1}} \cdot {\color{red} \frac{\partial z_1}{\partial x_1}} + {\color{junglegreen} \frac{\partial h_2}{\partial z_2}} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}}  \right) \]	
-}
-
-
-\only<7>{
-	\[ \frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}    +	{\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}  + {\color{blue} \frac{\partial y}{\partial h_2}}   {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}} + {\color{blue} \frac{\partial y}{\partial h_2}}  {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}  \]	
-}
-
-\end{frame} 
-
-
-\begin{frame}{Пойдём глубже}
-
-\begin{center}
-	\begin{tikzpicture}
-	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
-	
-	% Input
-	\foreach \x in {1,...,2}
-	\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
-	
-	% Hidden 1
-	\foreach \x in {1,...,2}
-	\node at (3, -\x*1.5) [place] (second_\x){$z_\x$};		
-	
-	% Hidden 2
-	\foreach \x in {1,...,2}
-	\node at (6, -\x*1.5) [place] (third_\x){$h_\x$};	
-	
-	% Output
-	\node at (9, -2.25) [place] (fourth){$y$};
-		
-	\draw [->, dashed, red]  (second_1) to (first_1);
-	\draw [->, dashed, green]  (second_2) to (first_1);
-	\draw [->, dashed, red]  (second_1) to (first_2);
-	\draw [->, dashed, green]  (second_2) to (first_2);
-	
-	\draw [->, dashed, amethyst]  (third_1) to (second_1);
-	\draw [->, dashed, junglegreen]  (third_2) to (second_1);
-	\draw [->, dashed, amethyst] (third_1) to (second_2);
-	\draw [->, dashed, junglegreen]  (third_2) to (second_2);
-	
-	\draw [->, dashed,  blue]  (fourth) to (third_1);
-	\draw [->, dashed, blue]   (fourth) to (third_2);
-	
-	\only<2>{ 
-			\draw [->, dashed, ultra thick, blue]  (fourth) to (third_1);
-			\draw [->, dashed, ultra thick, amethyst]  (third_1) to (second_1);
-			\draw [->, dashed, ultra thick, red]  (second_1) to (first_1);
-	}
-
-	\only<3>{ 
-		\draw [->, dashed, ultra thick, blue]  (fourth) to (third_1);
-		\draw [->, dashed, ultra thick, amethyst]  (third_1) to (second_2);
-		\draw [->, dashed, ultra thick, green]  (second_2) to (first_1);
-	}
-
-	\only<4>{ 
-		\draw [->, dashed, ultra thick, blue]  (fourth) to (third_2);
-		\draw [->, dashed, ultra thick, junglegreen]  (third_2) to (second_1);
-		\draw [->, dashed, ultra thick, red]  (second_1) to (first_1);
-	}
-
-	\only<5>{ 
-		\draw [->, dashed, ultra thick, blue]  (fourth) to (third_2);
-		\draw [->, dashed, ultra thick, junglegreen]  (third_2) to (second_2);
-		\draw [->, dashed, ultra thick, green]  (second_2) to (first_1);
-	}
-	
-	\end{tikzpicture}
-\end{center}
-
-\only<1>{
-	\[ 
-	\frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}    +     {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}     +       {\color{blue} \frac{\partial y}{\partial h_2}}   {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}      +      {\color{blue} \frac{\partial y}{\partial h_2}}  {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}  
-	\]	
-}
-
-\only<2>{
-	\[ 
-	\frac{\partial y}{\partial x_1} =  \boxed{ {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}} }   +     {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}     +       {\color{blue} \frac{\partial y}{\partial h_2}}   {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}      +      {\color{blue} \frac{\partial y}{\partial h_2}}  {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}  
-	\]	
-}
-
-
-\only<3>{
-	\[ 
-	\frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}    +    \boxed{ {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}} }    +       {\color{blue} \frac{\partial y}{\partial h_2}}   {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}      +      {\color{blue} \frac{\partial y}{\partial h_2}}  {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}  
-	\]	
-}
-
-\only<4>{
-	\[ 
-	\frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}    +     {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}     +      \boxed{ {\color{blue} \frac{\partial y}{\partial h_2}}   {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}} }     +      {\color{blue} \frac{\partial y}{\partial h_2}}  {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}  
-	\]	
-}
-
-\only<5>{
-	\[ 
-	\frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}    +     {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}     +       {\color{blue} \frac{\partial y}{\partial h_2}}   {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}      +    \boxed{  {\color{blue} \frac{\partial y}{\partial h_2}}  {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}  }
-	\]	
-}
-
-\end{frame} 
-
-
-\begin{frame}{Алгоритм поиска производной в графе}
-	\begin{wideitemize}
-		\item Как посчитать производную $a$ по $b$? 
-		
-		\item Находим непосещённый путь из $a$ в $b$ 
-		
-		\item Перемножаем значения на рёбрах пути 
-		
-		\item Добавляем в сумму
-		
-	\end{wideitemize}	
-\vspace{-1.5cm}
-\begin{columns}
-\begin{column}{0.4\textwidth}
-\begin{center}
-\begin{tikzpicture}
-\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
-
-% Input
-\foreach \x in {1,...,2}
-\draw node at (0, -\x*1.5) [place] (second_\x) {$x_\x$};
-
-% Hidden 1
-\foreach \x in {1,...,2}
-\node at (3, -\x*1.5) [place] (first_\x){$z_\x$};		
-
-% Output
-\node at (6, -2.25) [place] (fourth){$y$};
-
-\draw [->, dashed, red]  (first_1) to (second_1) node[right=1.cm] {$\frac{\partial z_1}{\partial x_1}$} ;
-\draw [->, dashed]  (first_1) to (second_2);
-\draw [->, dashed, green]  (first_2) to (second_1) node[right=2.3cm, below] {$\frac{\partial z_2}{\partial x_1}$} ;
-\draw [->, dashed]  (first_2) to (second_2); 
-
-\draw [->, dashed, amethyst] (fourth)  to (first_1) node[right=1.cm] {$\frac{\partial y}{\partial z_1}$} ;
-\draw [->, dashed, junglegreen] (fourth) to (first_2) node[right=1.cm] {$\frac{\partial y}{\partial z_2}$} ;
-\end{tikzpicture}
-\end{center}
-\end{column}
-\begin{column}{0.4\textwidth}
-\[ 
-\frac{\partial y}{\partial x_1} =  {\color{amethyst} \frac{\partial y}{\partial z_1} } \cdot {\color{red}  \frac{\partial z_1}{\partial x_1} } + {\color{ junglegreen}  \frac{\partial y}{\partial z_2} } \cdot {\color{green} \frac{\partial z_2}{\partial x_1 } }
-\]
-\end{column}
-\end{columns}
-\end{frame}
-
-
-\begin{frame}{На примере одного нейрона}
-\begin{center}
-	\begin{tikzpicture}
-		\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
-		
-		% Input
-		\foreach \x in {1,...,2}
-		\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
-		
-		% weights
-		\draw node at (1, -0.5) [place] (param_1) {$w_1$};
-		\draw node at (1, -4) [place] (param_2) {$w_2$};
-		
-		% product
-		\foreach \x in {1,...,2}
-		\node at (3, -\x*1.5) [place] (second_\x){$\cdot$};		
-
-		% sum
-		\node at (5, -2.25) [place] (sum){$s$};
-		\node at (7, -2.25) [place] (activ){$f$};
-		\node at (9, -2.25) [place] (out){$z$};
-		\node at (11, -2.75) [place] (loss){$L$};
-		\node at (9, -3.25) [place] (target){$y$};
-		
-		\draw [->]  (first_1) to (second_1);
-		\draw [->]  (first_2) to (second_2);	
-		\draw [->]  (param_1) to (second_1);
-		\draw [->]  (param_2) to (second_2);
-		
-		\draw [->] (second_1) to (sum);
-		\draw [->] (second_2) to (sum);
-		
-		\draw [->] (sum) to (activ);
-		\draw [->] (activ) to (out);
-		\draw [->] (out) to (loss);
-		\draw [->] (target) to (loss);
-	\end{tikzpicture}
-
-	
-	\begin{equation*}
-			z = f(s) = f(w_1 \cdot x_1 + w_2 \cdot x_2)
-	\end{equation*}
-	
-	\alert{ Для SGD нам нужны $\frac{\partial L}{\partial w_1}$  и $\frac{\partial L}{\partial w_2}$ }
-\end{center}
-\end{frame}	
-
-
-
-\begin{frame}{Граф производных}
-\begin{center}
-	\begin{tikzpicture}
-	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
-	
-	% Input
-	\foreach \x in {1,...,2}
-	\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
-	
-	% weights
-	\draw node at (1, -0.5) [place] (param_1) {$w_1$};
-	\draw node at (1, -4) [place] (param_2) {$w_2$};
-	
-	% product
-	\foreach \x in {1,...,2}
-	\node at (3, -\x*1.5) [place] (second_\x){$\cdot$};		
-	
-	% sum
-	\node at (5, -2.25) [place] (sum){$s$};
-	\node at (7, -2.25) [place] (activ){$f$};
-	\node at (9, -2.25) [place] (out){$z$};
-	\node at (11, -2.75) [place] (loss){$L$};
-	\node at (9, -3.25) [place] (target){$y$};
-	
-	\only<1>{
-	\draw [->, dashed, red]  (second_1) to (first_1) node[below right=2.mm] {$w_1$} ;
-	\draw [->, dashed, red]  (second_2) to (first_2) node[above right=2.mm] {$w_2$} ;
-	\draw [->, dashed, red]  (second_1) to (param_1) node[right=1.cm] {$x_1$} ;
-	\draw [->, dashed, red]  (second_2) to (param_2) node[right=1.cm] {$x_2$} ;
-	
-	\draw [->, dashed, red] (sum) to (second_1)  node[right=8.mm] {$1$} ;
-	\draw [->, dashed, red] (sum) to (second_2)  node[right=8.mm] {$1$} ;
-	
-	\draw [->, dashed, red] (activ) to (sum)  node[right=6.mm] {$\frac{\partial f}{\partial s}$} ;
-	\draw [->, dashed, red] (out) to (activ)  node[right=7.mm] {$1$} ;
-	\draw [->, dashed] (loss) to (out) node[right=7.mm] {$\frac{\partial L}{\partial z}$} ;
-	\draw [->, dashed] (loss) to (target) ;
-	}
-
-	\only<2>{
-	\draw [->, dashed, red]  (second_1) to (first_1) node[below right=2.mm] {$w_1$} ;
-	\draw [->, dashed, red]  (second_2) to (first_2) node[above right=2.mm] {$w_2$} ;
-	\draw [->, dashed, amethyst, ultra thick]  (second_1) to (param_1) node[right=1.cm] {$x_1$} ;
-	\draw [->, dashed, red]  (second_2) to (param_2) node[right=1.cm] {$x_2$} ;
-	
-	\draw [->, dashed, amethyst, ultra thick] (sum) to (second_1)  node[right=8.mm] {$1$} ;
-	\draw [->, dashed, red] (sum) to (second_2)  node[right=8.mm] {$1$} ;
-	
-	\draw [->, dashed, amethyst, ultra thick] (activ) to (sum)  node[right=6.mm] {$\frac{\partial f}{\partial s}$} ;
-	\draw [->, dashed, amethyst, ultra thick] (out) to (activ)  node[right=7.mm] {$1$} ;
-	\draw [->, dashed, amethyst, ultra thick] (loss) to (out) node[right=7.mm] {$\frac{\partial L}{\partial z}$} ;
-	\draw [->, dashed] (loss) to (target) ;
-	}
-
-	\only<3>{
-	\draw [->, dashed, red]  (second_1) to (first_1) node[below right=2.mm] {$w_1$} ;
-	\draw [->, dashed, red]  (second_2) to (first_2) node[above right=2.mm] {$w_2$} ;
-	\draw [->, dashed, red]  (second_1) to (param_1) node[right=1.cm] {$x_1$} ;
-	\draw [->, dashed, amethyst,  ultra thick]  (second_2) to (param_2) node[right=1.cm] {$x_2$} ;
-	
-	\draw [->, dashed, red] (sum) to (second_1)  node[right=8.mm] {$1$} ;
-	\draw [->, dashed, amethyst, ultra thick] (sum) to (second_2)  node[right=8.mm] {$1$} ;
-	
-	\draw [->, dashed, amethyst, ultra thick] (activ) to (sum)  node[right=6.mm] {$\frac{\partial f}{\partial s}$} ;
-	\draw [->, dashed, amethyst, ultra thick] (out) to (activ)  node[right=7.mm] {$1$} ;
-	\draw [->, dashed, amethyst, ultra thick] (loss) to (out) node[right=7.mm] {$\frac{\partial L}{\partial z}$} ;
-	\draw [->, dashed] (loss) to (target) ;
-	}
-
-	\end{tikzpicture}
-
-	\begin{equation*}
-	z = f(s) = f(w_1 \cdot x_1 + w_2 \cdot x_2)
-	\end{equation*}
-	
-	\only<1> { \alert{ Для SGD нам нужны $\frac{\partial L}{\partial w_1}$  и $\frac{\partial L}{\partial w_2}$ } }
-	
-	\only<2>{ 
-	\[
-		\frac{\partial L}{\partial w_1} = \frac{\partial L}{\partial z} \cdot \frac{\partial f}{\partial s} \cdot x_1 
-	\] }
-
-	\only<3>{ 
-	\[
-		\frac{\partial L}{\partial w_1} = \frac{\partial L}{\partial z} \cdot \frac{\partial f}{\partial s} \cdot x_1  \qquad  \frac{\partial L}{\partial w_2} = \frac{\partial L}{\partial z} \cdot \frac{\partial f}{\partial s} \cdot x_2  
-	\] }
-\end{center}
-\end{frame}	
-
-
-\begin{frame}{Цепное правило и грaф производных}
-\begin{wideitemize} 
-	\item Теперь у нас есть алгоритм для подсчета производных для любых
-	дифференцируемых графов вычислений
-	
-	\item \alert{ Осталось делать вычисления быстро }
-\end{wideitemize} 
-\end{frame}
-
-
-
-\begin{frame}{Обратное распространение ошибки}
-
-\alert{Мы хотим поменять параметры нейрона в рамках SGD}
-
-\vfill
-
-\[
-h_2 = f(w_0 + w_1 z_1 + w_2 z_2)
-\]
-
-\vfill
-
-\[
-\frac{\partial L}{\partial w_1} = \frac{\partial L}{\partial y} \cdot \frac{\partial y}{\partial w_1} =  \frac{\partial L}{\partial y} \cdot {\color{blue} \frac{\partial y}{\partial h_2}} \cdot \frac{\partial h_2}{\partial w_1} 
-\]
-
-\vfill
-
-\[
-w_1^t = w_1^{t-1} - \gamma \cdot \frac{\partial L}{\partial w_1} (w_1^{t-1})
-\]
-\end{frame}
-
-
-\begin{frame}{Обратное распространение ошибки}
-\begin{equation*} 
-\begin{aligned}
-	\only<1-6>{ & 3: \quad  {\color{blue} \frac{\partial y}{\partial h_2} \qquad \frac{\partial y}{\partial h_1}} \\} 
-	\only<2-6>{& 2: \quad \frac{\partial y}{\partial z_1} = {\color{blue} \frac{\partial y}{\partial h_1}} \cdot {\color{amethyst} \frac{\partial h_1}{\partial z_1}} + \frac{\partial y}{\partial h_2} \cdot {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}   \qquad  \frac{\partial y}{\partial z_2} =  {\color{blue} \frac{\partial y}{\partial h_1}} \cdot {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  + {\color{blue} \frac{\partial y}{\partial h_2}} \cdot {\color{junglegreen} \frac{\partial h_2}{\partial z_2}} \\} 
-	\only<3>{& 1: \quad \frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}    +    {\color{blue} \frac{\partial y}{\partial h_2}}   {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}      +  {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}     +             {\color{blue} \frac{\partial y}{\partial h_2}}  {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}} \\ }  
-	\only<4>{& 1: \quad \frac{\partial y}{\partial x_1} = \left( {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_1}}    + {\color{blue} \frac{\partial y}{\partial h_2}}   {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}  \right) \cdot {\color{red} \frac{\partial z_1}{\partial x_1}}  + \left( {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_2}} +    {\color{blue} \frac{\partial y}{\partial h_2}}  {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}  \right) \cdot {\color{green} \frac{\partial z_2}{\partial x_1}} \\  }
-	\only<5>{& 1: \quad \frac{\partial y}{\partial x_1} =  \frac{\partial y}{\partial z_1} \cdot {\color{red} \frac{\partial z_1}{\partial x_1}}  + \frac{\partial y}{\partial z_2} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}} \\  }
-	\only<6>{& 1: \quad \frac{\partial y}{\partial x_1} =  \frac{\partial y}{\partial z_1} \cdot {\color{red} \frac{\partial z_1}{\partial x_1}}  + \frac{\partial y}{\partial z_2} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}} \qquad \frac{\partial y}{\partial x_2} =  \frac{\partial y}{\partial z_1} \cdot {\color{red} \frac{\partial z_1}{\partial x_2}}  + \frac{\partial y}{\partial z_2} \cdot {\color{green} \frac{\partial z_2}{\partial x_2}}  \\  }
-	\only<7>{
-		& 3: \quad  {\color{blue} \frac{\partial y}{\partial h_2}   \qquad  \boxed{ \frac{\partial y}{\partial h_1}} } \\
-		& 2: \quad \boxed{ \frac{\partial y}{\partial z_1} } = {\color{blue}   \boxed{  \frac{\partial y}{\partial h_1}}}  \cdot {\color{amethyst} \frac{\partial h_1}{\partial z_1}} + \frac{\partial y}{\partial h_2} \cdot {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}   \qquad  \frac{\partial y}{\partial z_2} =  {\color{blue} \boxed{ \frac{\partial y}{\partial h_1}} } \cdot {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  + {\color{blue} \frac{\partial y}{\partial h_2}} \cdot {\color{junglegreen} \frac{\partial h_2}{\partial z_2}} \\
-		& 1: \quad \frac{\partial y}{\partial x_1} =  \boxed{ \frac{\partial y}{\partial z_1} } \cdot {\color{red} \frac{\partial z_1}{\partial x_1}}  + \frac{\partial y}{\partial z_2} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}} \qquad \frac{\partial y}{\partial x_2} = \boxed{ \frac{\partial y}{\partial z_1}} \cdot {\color{red} \frac{\partial z_1}{\partial x_2}}  + \frac{\partial y}{\partial z_2} \cdot {\color{green} \frac{\partial z_2}{\partial x_2}}  \\  
-	}
-\end{aligned} 
-\end{equation*}
-
-\begin{center}
-	\begin{tikzpicture}
-	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
-	
-	% Input
-	\foreach \x in {1,...,2}
-	\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
-	
-	% Hidden 1
-	\foreach \x in {1,...,2}
-	\node at (3, -\x*1.5) [place] (second_\x){$z_\x$};		
-	
-	% Hidden 2
-	\foreach \x in {1,...,2}
-	\node at (6, -\x*1.5) [place] (third_\x){$h_\x$};	
-	
-	% Output
-	\node at (9, -2.25) [place] (fourth){$y$};
-	
-	\draw [->, dashed, red]  (second_1) to (first_1);
-	\draw [->, dashed, green]  (second_2) to (first_1);
-	\draw [->, dashed, red]  (second_1) to (first_2);
-	\draw [->, dashed, green]  (second_2) to (first_2);
-	
-	\draw [->, dashed, amethyst]  (third_1) to (second_1);
-	\draw [->, dashed, junglegreen]  (third_2) to (second_1);
-	\draw [->, dashed, amethyst] (third_1) to (second_2);
-	\draw [->, dashed, junglegreen]  (third_2) to (second_2);
-	
-	\draw [->, dashed,  blue]  (fourth) to (third_1);
-	\draw [->, dashed, blue]   (fourth) to (third_2);
-	
-	\only<1-6>{ 
-		\draw [->, dashed,  ultra thick, blue]  (fourth) to (third_1);
-		\draw [->, dashed, ultra thick, blue]   (fourth) to (third_2);
-	}
-
-	\only<2-6>{ 
-		\draw [->, dashed, ultra thick, amethyst]  (third_1) to (second_1);
-		\draw [->, dashed, ultra thick, junglegreen]  (third_2) to (second_1);
-	}
-
-	\only<3-6>{ 
-		\draw [->, dashed, ultra thick, red]  (second_1) to (first_1);
-	}
-	\end{tikzpicture}
-\end{center}
-\end{frame}
-
-
-\begin{frame}{Обратное распространение ошибки}
-\begin{wideitemize} 
-	\item Это называется reverse-mode дифференцирование, в теории нейросетей это называют \alert{back-propagation (обратное распространение ошибки)}
-	
-	\item Работает быстро, потому что переиспользует вычисленные ранее значения
-	
-	\item На самом деле, по каждому ребру пройдемся всего раз, то есть сложность линейна	по количеству ребер (т.е. параметров)
-\end{wideitemize} 
-\end{frame}
-
-
-\begin{frame}{Back-propagation на одном нейроне}
-\begin{center}
-	\begin{tikzpicture}
-	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
-	\tikzstyle{place2}=[circle, draw=red, minimum size = 8mm]
-	
-	% Input
-	\foreach \x in {1,...,2}
-	\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
-	
-	% weights
-	\draw node at (1, -0.5) [place] (param_1) {$w_1$};
-	\draw node at (1, -4) [place] (param_2) {$w_2$};
-	
-	% product
-	\foreach \x in {1,...,2}
-	\node at (3, -\x*1.5) [place] (second_\x){$\cdot$};		
-	
-	\node[thick] at (7, -1) {$z = \sigma(s) = \sigma(w_1 x_1 + w_2 x_2)$};
-	
-	% sum
-	\node  at (5, -2.25) [place] (sum){$s$};
-	\node at (7, -2.25) [place] (activ){$\sigma$};
-	\node at (9, -2.25) [place] (out){$z$};
-	
-	\draw [->]  (first_1) to (second_1);
-	\draw [->]  (first_2) to (second_2);	
-	\draw [->]  (param_1) to (second_1);
-	\draw [->]  (param_2) to (second_2);
-	
-	\draw [->] (second_1) to (sum);
-	\draw [->] (second_2) to (sum);
-	
-	\draw [->] (sum) to (activ);
-	\draw [->] (activ) to (out);
-\end{tikzpicture}
-\end{center}
-	
-\vfill 
-	
-Данные текут сквозь нейрон:
-
-\[  \boxed{X} \Rightarrow \boxed{s = X \cdot W}  \Rightarrow  \boxed{z =\sigma(s)}   \Rightarrow  \boxed{L(z, y) = (y - z)^2 }\]
-\end{frame} 
-
-
-\begin{frame}{Back-propagation на одном нейроне}
-
-Forward pass:
-
-\only<1>{ \[  \boxed{X} \Rightarrow \boxed{s = X \cdot W}  \Rightarrow  \boxed{z =\sigma(s)}   \Rightarrow  \boxed{L(z, y) = (y - z)^2 }\] }
-
-\only<2>{ \[  \boxed{X} \Rightarrow { \color{amethyst} \boxed{s = X \cdot W} }  \Rightarrow  \boxed{z =\sigma(s)}   \Rightarrow  \boxed{L(z, y) = (y - z)^2 }\] }
-
-Backward pass: 
-
-\begin{center}
-	\begin{tikzpicture}
-	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
-	
-	% Input
-	\foreach \x in {1,...,2}
-	\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
-	
-	% weights
-	\draw node at (1, -0.5) [place] (param_1) {$w_1$};
-	\draw node at (1, -4) [place] (param_2) {$w_2$};
-	
-	% product
-	\foreach \x in {1,...,2}
-	\node at (3, -\x*1.5) [place] (second_\x){$\cdot$};		
-	
-	% sum
-	\node at (5, -2.25) [place] (sum){$s$};
-	\node at (7, -2.25) [place] (activ){$f$};
-	\node at (9, -2.25) [place] (out){$z$};
-	\node at (11, -2.75) [place] (loss){$L$};
-	\node at (9, -3.25) [place] (target){$y$};
-	
-	\only<2>{
-		\node[amethyst,  thick] at (7, 0.4) {\text{Нам нужно вычислить} };
-		\node[amethyst,  thick] at (7, 0) {\text{сигмоиду в точке s} };
-		
-		\node[thick] at (8, -1) {$\frac{\partial \sigma}{\partial s} = \sigma(s) \cdot (1 - \sigma(s))$};
-	}
-	
-	\draw [->, dashed, red]  (second_1) to (first_1) node[below right=2.mm] {$w_1$} ;
-	\draw [->, dashed, red]  (second_2) to (first_2) node[above right=2.mm] {$w_2$} ;
-	\draw [->, dashed, red]  (second_1) to (param_1) node[right=1.cm] {$x_1$} ;
-	\draw [->, dashed, red]  (second_2) to (param_2) node[right=1.cm] {$x_2$} ;
-	
-	\draw [->, dashed, red] (sum) to (second_1)  node[right=8.mm] {$1$} ;
-	\draw [->, dashed, red] (sum) to (second_2)  node[right=8.mm] {$1$} ;
-	
-	\only<1>{ \draw [->, dashed, red] (activ) to (sum)  node[right=6.mm] {$\frac{\partial \sigma}{\partial s}$} ; }
-	
-	\only<2>{ \draw [->, dashed, ultra thick, amethyst] (activ) to (sum)  node[right=6.mm] {$\frac{\partial \sigma}{\partial s}$} ; }
-	
-	\draw [->, dashed, red] (out) to (activ)  node[right=7.mm] {$1$} ;
-	\draw [->, dashed] (loss) to (out) node[right=7.mm] {$\frac{\partial L}{\partial z}$} ;
-	\draw [->, dashed] (loss) to (target) ;
-	\end{tikzpicture}
-\end{center}
-\end{frame} 
-
-
-\begin{frame}{Сигмоида: прямой проход (forward pass)}
-\begin{center}
-	\begin{tikzpicture}
-	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
-	\tikzstyle{place2}=[circle, draw=red, minimum size = 8mm]
-	
-	% Input
-	\foreach \x in {1,...,2}
-	\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
-	
-	% weights
-	\draw node at (1, -0.5) [place] (param_1) {$w_1$};
-	\draw node at (1, -4) [place] (param_2) {$w_2$};
-	
-	% product
-	\foreach \x in {1,...,2}
-	\node at (3, -\x*1.5) [place] (second_\x){$\cdot$};		
-	
-	\node[thick] at (7, -1) {$z = \sigma(s) = \sigma(w_1 x_1 + w_2 x_2)$};
-	
-	% sum
-	\node  at (5, -2.25) [place2] (sum){\color{red} $s$};
-	\node at (7, -2.25) [place2] (activ){\color{red} $\sigma$};
-	\node at (9, -2.25) [place2] (out){\color{red} $z$};
-	
-	\draw [->]  (first_1) to (second_1);
-	\draw [->]  (first_2) to (second_2);	
-	\draw [->]  (param_1) to (second_1);
-	\draw [->]  (param_2) to (second_2);
-	
-	\draw [->] (second_1) to (sum);
-	\draw [->] (second_2) to (sum);
-	
-	\draw [->, red] (sum) to (activ);
-	\draw [->, red] (activ) to (out);
-	\end{tikzpicture}
-\end{center}
-	
-{\color{green} def}  {\color{blue} forward\_pass}(s):  \\
-\mbox{ } \hspace{5mm} {\color{green} return } 1/(1 + np.exp(-s))
-\end{frame} 
-
-
-
-\begin{frame}{Сигмоида: обратный проход (backward pass)}
-\begin{center}
-	\begin{tikzpicture}
-	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
-	\tikzstyle{place2}=[circle, draw=red, minimum size = 8mm]
-	\tikzstyle{place3}=[circle, draw=amethyst, minimum size = 8mm]
-	
-	% Input
-	\foreach \x in {1,...,2}
-	\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
-	
-	% weights
-	\draw node at (1, -0.5) [place] (param_1) {$w_1$};
-	\draw node at (1, -4) [place] (param_2) {$w_2$};
-	
-	% product
-	\foreach \x in {1,...,2}
-	\node at (3, -\x*1.5) [place] (second_\x){$\cdot$};		
-	
-	% sum
-	\node at (5, -2.25) [place3] (sum){\color{amethyst} $s$};
-	\node at (7, -2.25) [place2] (activ){\color{red} $\sigma$};
-	\node at (9, -2.25) [place2] (out){\color{red} $z$};
-	\node at (11, -2.75) [place] (loss){$L$};
-	\node at (9, -3.25) [place] (target){$y$};
-	
-	\node[amethyst,  thick] at (7, 0.4) {\text{Нам нужно вычислить} };
-	\node[amethyst,  thick] at (7, 0) {\text{сигмоиду в точке s} };
-	
-	\node[thick] at (8, -1) {\color{red} $\frac{\partial \sigma}{\partial s} = \sigma(s) \cdot (1 - \sigma(s))$};
-	
-	\draw [->, dashed]  (second_1) to (first_1) node[below right=2.mm] {$w_1$} ;
-	\draw [->, dashed]  (second_2) to (first_2) node[above right=2.mm] {$w_2$} ;
-	\draw [->, dashed]  (second_1) to (param_1) node[right=1.cm] {$x_1$} ;
-	\draw [->, dashed]  (second_2) to (param_2) node[right=1.cm] {$x_2$} ;
-	
-	\draw [->, dashed] (sum) to (second_1)  node[right=8.mm] {$1$} ;
-	\draw [->, dashed] (sum) to (second_2)  node[right=8.mm] {$1$} ;
-	
-	 \draw [->, dashed, red] (activ) to (sum)  node[right=6.mm] {$\frac{\partial \sigma}{\partial s}$} ; 
-	
-	\draw [->, dashed, red] (out) to (activ)  node[right=7.mm] {$1$} ;
-	\draw [->, dashed, junglegreen] (loss) to (out) node[right=7.mm] {\color{junglegreen} $\frac{\partial L}{\partial z}$} ;
-	\draw [->, dashed] (loss) to (target) ;
-	\end{tikzpicture}
-\end{center}
-
-\begin{columns}
-	\begin{column}{.69\textwidth}
-		{\color{green} def}  {\color{blue} backward\_pass}({\color{amethyst} s}, {\color{junglegreen} incoming\_gradient}):  \\
-		\mbox{ } \hspace{5mm} { sigm =  1/(1 + np.exp({\color{amethyst}-s}))}) \\
-		\mbox{ } \hspace{5mm} {\color{green} return }  {\color{red} sigm * (1 - sigm) } *  {\color{junglegreen} incoming\_gradient}
-	\end{column}
-	\begin{column}{.29\textwidth}
-		\[  \frac{ \partial L}{\partial s}  = {\color{red}  \frac{ \partial \sigma}{\partial s} } \cdot {\color{junglegreen} \frac{ \partial L}{\partial \sigma} }   \]
-	\end{column}
-\end{columns}
-\end{frame} 
-
-
-\begin{frame}{Полносвязный слой: прямой проход (forward pass)}
-\begin{wideitemize}
-\item Два нейрона с тремя входами:
-
-\begin{equation*}
-\begin{aligned}
-	& z_1 = x_1 w_{11} + x_2 w_{21} + x_3 w_{31}  \\  
-	& z_2 = x_1 w_{12} + x_2 w_{22} + x_3 w_{32}  \\  
-\end{aligned}
-\end{equation*}
-
-\item Матричная запись: 
-
-\begin{equation*}
-	\begin{pmatrix} z_1 & z_2 \end{pmatrix}  = \begin{pmatrix} x_1 & x_2 & x_3  \end{pmatrix}  \cdot  \begin{pmatrix} w_{11} & w_{12} \\ w_{21} & w_{22} \\ w_{31}  & w_{32} \\  \end{pmatrix}
-\end{equation*}
-
-\[ 
-	z  = x W 
-\]
-
-\end{wideitemize}
-\end{frame}
-
-
-\begin{frame}{Полносвязный слой: обратный проход (backward pass)}
-\begin{wideitemize}
-
-	\item Матричная запись: 
-	
-	\begin{equation*}
-	\begin{pmatrix} z_1 & z_2 \end{pmatrix}  = \begin{pmatrix} x_1 & x_2 & x_3  \end{pmatrix}  \cdot  \begin{pmatrix} w_{11} & w_{12} \\ w_{21} & w_{22} \\ w_{31}  & w_{32} \\  \end{pmatrix}
-	\end{equation*}
-	
-	\[ 
-	Z  = X W 
-	\]
-
-\only<1>{	
-	\item Для обратного прохода нам нужна $\frac{\partial L}{\partial W}$: 
-	
-	\[
-	W_t = W_{t-1} - \eta_t \cdot \left. \frac{\partial L}{\partial W} \right |_{W_{t-1}}
-	\]
-	}
-
-%\only<2>{	
-%	\item Нужная нам производная - матрица: 
+%
+%\begin{frame}{Цепное правило}
+%	\begin{wideitemize}
+%		\item  Возьмём сложную функцию: 
+%		
+%		\begin{equation*}
+%		\begin{aligned}
+%		& z_1 = z_1(x_1, x_2) \\  & z_2 = z_2(x_1, x_2) \\  & y = y(z_1, z_2)
+%		\end{aligned}
+%		\end{equation*} 
+%		
+%		\item Производную такой функции можно найти по цепному правилу: 
+%		
+%		$$
+%		\frac{\partial y}{\partial x_1} = {\color{amethyst} \frac{\partial y}{\partial z_1}} \cdot {\color{red} \frac{\partial z_1}{\partial x_1}} + {\color{junglegreen} \frac{\partial y}{\partial z_2}} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}}
+%		$$ 
+%	\end{wideitemize}
+%\end{frame} 
+%
+%
+%\begin{frame}{Как считать производные?}
+%\begin{columns}
+%	\begin{column}{0.6\textwidth}
+%\begin{center}
+%	\begin{tikzpicture}
+%	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
+%	
+%	% Input
+%	\foreach \x in {1,...,2}
+%	\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
+%	
+%	% Hidden 1
+%	\foreach \x in {1,...,2}
+%	\node at (3, -\x*1.5) [place] (second_\x){$z_\x$};		
+%		
+%	% Output
+%	\node at (6, -2.25) [place] (fourth){$y$};
+%	
+%	\draw [->, red]  (first_1) to (second_1);
+%	\draw [->, green]  (first_1) to (second_2);
+%	\draw [->]  (first_2) to (second_1);
+%	\draw [->]  (first_2) to (second_2);
+%	
+%	\draw [->, amethyst]  (second_1) to (fourth);
+%	\draw [->, junglegreen]  (second_2) to (fourth);
+%	\end{tikzpicture}
+%	\vfill
+%	\begin{tikzpicture}
+%	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
+%	
+%	% Input
+%	\foreach \x in {1,...,2}
+%	\draw node at (0, -\x*1.5) [place] (second_\x) {$x_\x$};
+%	
+%	% Hidden 1
+%	\foreach \x in {1,...,2}
+%	\node at (3, -\x*1.5) [place] (first_\x){$z_\x$};		
+%	
+%	% Output
+%	\node at (6, -2.25) [place] (fourth){$y$};
+%	
+%	\draw [->, dashed, red]  (first_1) to (second_1) node[right=1.cm] {$\frac{\partial z_1}{\partial x_1}$} ;
+%	\draw [->, dashed]  (first_1) to (second_2) node[right=1.cm,above] {$\frac{\partial z_1}{\partial x_2}$} ;
+%	\draw [->, dashed, green]  (first_2) to (second_1) node[right=2.3cm, below] {$\frac{\partial z_2}{\partial x_1}$} ;
+%	\draw [->, dashed]  (first_2) to (second_2) node[right=1.2cm] {$\frac{\partial z_2}{\partial x_2}$} ;
+%	
+%	\draw [->, dashed, amethyst] (fourth)  to (first_1) node[right=1.cm] {$\frac{\partial y}{\partial z_1}$} ;
+%	\draw [->, dashed, junglegreen] (fourth) to (first_2) node[right=1.cm] {$\frac{\partial y}{\partial z_2}$} ;
+%	\end{tikzpicture}
+%\end{center}
+%\end{column}
+%\begin{column}{0.4\textwidth}
+%\textbf{Граф вычислений: }
+%\begin{equation*} 
+%\begin{aligned}
+%	& z_1 = z_1(x_1, x_2)\\
+%	& z_2 = z_2(x_1, x_2) \\
+%	& y = y(z_1, z_2) 
+%\end{aligned}
+%\end{equation*} 
+%\vfill 
+%\only<1>{
+%\alert{Из него можно построить граф производных, каждому ребру будет приписана производная}}
+%
+%\only<2>{\textbf{Можно догадаться как работает цепное правило:}
+%	\[\frac{\partial y}{\partial x_1} = {\color{amethyst} \frac{\partial y}{\partial z_1}} \cdot {\color{red} \frac{\partial z_1}{\partial x_1}} + {\color{junglegreen} \frac{\partial y}{\partial z_2}} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}} \]
+%}
+%\end{column}
+%\end{columns}
+%\end{frame} 
+%
+%
+%
+%\begin{frame}{Пойдём глубже}
+%
+%\begin{center}
+%	\begin{tikzpicture}
+%	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
+%	
+%	% Input
+%	\foreach \x in {1,...,2}
+%	\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
+%	
+%	% Hidden 1
+%	\foreach \x in {1,...,2}
+%	\node at (3, -\x*1.5) [place] (second_\x){$z_\x$};		
+%	
+%	% Hidden 2
+%	\foreach \x in {1,...,2}
+%	\node at (6, -\x*1.5) [place] (third_\x){$h_\x$};	
+%	
+%	% Output
+%	\node at (9, -2.25) [place] (fourth){$y$};
+%	
+%	\draw [->, red]  (first_1) to (second_1);
+%	\draw [->, green]  (first_1) to (second_2);
+%	\draw [->, red]  (first_2) to (second_1);
+%	\draw [->, green]  (first_2) to (second_2);
+%	
+%	\draw [->, amethyst]  (second_1) to (third_1);
+%	\draw [->, junglegreen]  (second_1) to (third_2);
+%	\draw [->, amethyst]  (second_2) to (third_1);
+%	\draw [->, junglegreen]  (second_2) to (third_2);
+%	
+%	\draw [->, blue]  (third_1) to (fourth);
+%	\draw [->, blue]  (third_2) to (fourth);
+%
+%	\end{tikzpicture}
+%\end{center}
+%
+%\only<1>{
+%\begin{equation*} 
+%	\begin{aligned}
+%		z_1 = z_1({\color{red} x_1, x_2})  & \quad   h_1 = h_1({\color{amethyst} z_1, z_2}) & \quad y = y({\color{blue} h_1, h_2}) \\
+%		z_2 = z_2({\color{green} x_1, x_2}) & \quad h_2 = h_2({\color{junglegreen} z_1, z_2}) &  
+%	\end{aligned}
+%\end{equation*} }
+%
+%\only<2>{
+%\[ \frac{\partial y}{\partial x_1} = ?  \]	
+%}
+%
+%\only<3>{
+%	\[ \frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}} \cdot  \frac{\partial h_1}{\partial x_1} + {\color{blue} \frac{\partial y}{\partial h_2}} \cdot \frac{\partial h_2}{\partial x_1}   \]	
+%}
+%
+%\only<4>{
+%	\[ \frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}} \cdot  \boxed{ \frac{\partial h_1}{\partial x_1}  } + {\color{blue} \frac{\partial y}{\partial h_2}} \cdot \boxed{ \frac{\partial h_2}{\partial x_1} }  \]	
+%}
+%
+%\only<5>{
+%	\[ \frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}} \cdot \underbrace{ \boxed{ \frac{\partial h_1}{\partial x_1}  }  }_{ {\color{amethyst} \frac{\partial h_1}{\partial z_1}} \cdot {\color{red} \frac{\partial z_1}{\partial x_1}} + {\color{amethyst} \frac{\partial h_1}{\partial z_2}} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}}  }  + {\color{blue} \frac{\partial y}{\partial h_2}} \cdot \underbrace{\boxed{ \frac{\partial h_2}{\partial x_1} } }_{ {\color{junglegreen} \frac{\partial h_2}{\partial z_1}} \cdot {\color{red} \frac{\partial z_1}{\partial x_1}} + {\color{junglegreen} \frac{\partial h_2}{\partial z_2}} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}}  } \]	
+%}
+%
+%
+%\only<6>{
+%	\[ \frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}} \cdot \left( {\color{amethyst} \frac{\partial h_1}{\partial z_1}} \cdot {\color{red} \frac{\partial z_1}{\partial x_1}} + {\color{amethyst} \frac{\partial h_1}{\partial z_2}} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}}  \right)  + {\color{blue} \frac{\partial y}{\partial h_2}} \cdot \left( {\color{junglegreen} \frac{\partial h_2}{\partial z_1}} \cdot {\color{red} \frac{\partial z_1}{\partial x_1}} + {\color{junglegreen} \frac{\partial h_2}{\partial z_2}} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}}  \right) \]	
+%}
+%
+%
+%\only<7>{
+%	\[ \frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}    +	{\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}  + {\color{blue} \frac{\partial y}{\partial h_2}}   {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}} + {\color{blue} \frac{\partial y}{\partial h_2}}  {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}  \]	
+%}
+%
+%\end{frame} 
+%
+%
+%\begin{frame}{Пойдём глубже}
+%
+%\begin{center}
+%	\begin{tikzpicture}
+%	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
+%	
+%	% Input
+%	\foreach \x in {1,...,2}
+%	\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
+%	
+%	% Hidden 1
+%	\foreach \x in {1,...,2}
+%	\node at (3, -\x*1.5) [place] (second_\x){$z_\x$};		
+%	
+%	% Hidden 2
+%	\foreach \x in {1,...,2}
+%	\node at (6, -\x*1.5) [place] (third_\x){$h_\x$};	
+%	
+%	% Output
+%	\node at (9, -2.25) [place] (fourth){$y$};
+%		
+%	\draw [->, dashed, red]  (second_1) to (first_1);
+%	\draw [->, dashed, green]  (second_2) to (first_1);
+%	\draw [->, dashed, red]  (second_1) to (first_2);
+%	\draw [->, dashed, green]  (second_2) to (first_2);
+%	
+%	\draw [->, dashed, amethyst]  (third_1) to (second_1);
+%	\draw [->, dashed, junglegreen]  (third_2) to (second_1);
+%	\draw [->, dashed, amethyst] (third_1) to (second_2);
+%	\draw [->, dashed, junglegreen]  (third_2) to (second_2);
+%	
+%	\draw [->, dashed,  blue]  (fourth) to (third_1);
+%	\draw [->, dashed, blue]   (fourth) to (third_2);
+%	
+%	\only<2>{ 
+%			\draw [->, dashed, ultra thick, blue]  (fourth) to (third_1);
+%			\draw [->, dashed, ultra thick, amethyst]  (third_1) to (second_1);
+%			\draw [->, dashed, ultra thick, red]  (second_1) to (first_1);
+%	}
+%
+%	\only<3>{ 
+%		\draw [->, dashed, ultra thick, blue]  (fourth) to (third_1);
+%		\draw [->, dashed, ultra thick, amethyst]  (third_1) to (second_2);
+%		\draw [->, dashed, ultra thick, green]  (second_2) to (first_1);
+%	}
+%
+%	\only<4>{ 
+%		\draw [->, dashed, ultra thick, blue]  (fourth) to (third_2);
+%		\draw [->, dashed, ultra thick, junglegreen]  (third_2) to (second_1);
+%		\draw [->, dashed, ultra thick, red]  (second_1) to (first_1);
+%	}
+%
+%	\only<5>{ 
+%		\draw [->, dashed, ultra thick, blue]  (fourth) to (third_2);
+%		\draw [->, dashed, ultra thick, junglegreen]  (third_2) to (second_2);
+%		\draw [->, dashed, ultra thick, green]  (second_2) to (first_1);
+%	}
+%	
+%	\end{tikzpicture}
+%\end{center}
+%
+%\only<1>{
+%	\[ 
+%	\frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}    +     {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}     +       {\color{blue} \frac{\partial y}{\partial h_2}}   {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}      +      {\color{blue} \frac{\partial y}{\partial h_2}}  {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}  
+%	\]	
+%}
+%
+%\only<2>{
+%	\[ 
+%	\frac{\partial y}{\partial x_1} =  \boxed{ {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}} }   +     {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}     +       {\color{blue} \frac{\partial y}{\partial h_2}}   {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}      +      {\color{blue} \frac{\partial y}{\partial h_2}}  {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}  
+%	\]	
+%}
+%
+%
+%\only<3>{
+%	\[ 
+%	\frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}    +    \boxed{ {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}} }    +       {\color{blue} \frac{\partial y}{\partial h_2}}   {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}      +      {\color{blue} \frac{\partial y}{\partial h_2}}  {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}  
+%	\]	
+%}
+%
+%\only<4>{
+%	\[ 
+%	\frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}    +     {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}     +      \boxed{ {\color{blue} \frac{\partial y}{\partial h_2}}   {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}} }     +      {\color{blue} \frac{\partial y}{\partial h_2}}  {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}  
+%	\]	
+%}
+%
+%\only<5>{
+%	\[ 
+%	\frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}    +     {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}     +       {\color{blue} \frac{\partial y}{\partial h_2}}   {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}      +    \boxed{  {\color{blue} \frac{\partial y}{\partial h_2}}  {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}  }
+%	\]	
+%}
+%
+%\end{frame} 
+%
+%
+%\begin{frame}{Алгоритм поиска производной в графе}
+%	\begin{wideitemize}
+%		\item Как посчитать производную $a$ по $b$? 
+%		
+%		\item Находим непосещённый путь из $a$ в $b$ 
+%		
+%		\item Перемножаем значения на рёбрах пути 
+%		
+%		\item Добавляем в сумму
+%		
+%	\end{wideitemize}	
+%\vspace{-1.5cm}
+%\begin{columns}
+%\begin{column}{0.4\textwidth}
+%\begin{center}
+%\begin{tikzpicture}
+%\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
+%
+%% Input
+%\foreach \x in {1,...,2}
+%\draw node at (0, -\x*1.5) [place] (second_\x) {$x_\x$};
+%
+%% Hidden 1
+%\foreach \x in {1,...,2}
+%\node at (3, -\x*1.5) [place] (first_\x){$z_\x$};		
+%
+%% Output
+%\node at (6, -2.25) [place] (fourth){$y$};
+%
+%\draw [->, dashed, red]  (first_1) to (second_1) node[right=1.cm] {$\frac{\partial z_1}{\partial x_1}$} ;
+%\draw [->, dashed]  (first_1) to (second_2);
+%\draw [->, dashed, green]  (first_2) to (second_1) node[right=2.3cm, below] {$\frac{\partial z_2}{\partial x_1}$} ;
+%\draw [->, dashed]  (first_2) to (second_2); 
+%
+%\draw [->, dashed, amethyst] (fourth)  to (first_1) node[right=1.cm] {$\frac{\partial y}{\partial z_1}$} ;
+%\draw [->, dashed, junglegreen] (fourth) to (first_2) node[right=1.cm] {$\frac{\partial y}{\partial z_2}$} ;
+%\end{tikzpicture}
+%\end{center}
+%\end{column}
+%\begin{column}{0.4\textwidth}
+%\[ 
+%\frac{\partial y}{\partial x_1} =  {\color{amethyst} \frac{\partial y}{\partial z_1} } \cdot {\color{red}  \frac{\partial z_1}{\partial x_1} } + {\color{ junglegreen}  \frac{\partial y}{\partial z_2} } \cdot {\color{green} \frac{\partial z_2}{\partial x_1 } }
+%\]
+%\end{column}
+%\end{columns}
+%\end{frame}
+%
+%
+%\begin{frame}{На примере одного нейрона}
+%\begin{center}
+%	\begin{tikzpicture}
+%		\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
+%		
+%		% Input
+%		\foreach \x in {1,...,2}
+%		\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
+%		
+%		% weights
+%		\draw node at (1, -0.5) [place] (param_1) {$w_1$};
+%		\draw node at (1, -4) [place] (param_2) {$w_2$};
+%		
+%		% product
+%		\foreach \x in {1,...,2}
+%		\node at (3, -\x*1.5) [place] (second_\x){$\cdot$};		
+%
+%		% sum
+%		\node at (5, -2.25) [place] (sum){$s$};
+%		\node at (7, -2.25) [place] (activ){$f$};
+%		\node at (9, -2.25) [place] (out){$z$};
+%		\node at (11, -2.75) [place] (loss){$L$};
+%		\node at (9, -3.25) [place] (target){$y$};
+%		
+%		\draw [->]  (first_1) to (second_1);
+%		\draw [->]  (first_2) to (second_2);	
+%		\draw [->]  (param_1) to (second_1);
+%		\draw [->]  (param_2) to (second_2);
+%		
+%		\draw [->] (second_1) to (sum);
+%		\draw [->] (second_2) to (sum);
+%		
+%		\draw [->] (sum) to (activ);
+%		\draw [->] (activ) to (out);
+%		\draw [->] (out) to (loss);
+%		\draw [->] (target) to (loss);
+%	\end{tikzpicture}
+%
 %	
 %	\begin{equation*}
-%		\frac{\partial L}{\partial W} =  \begin{pmatrix}   \frac{\partial L}{\partial w_{11}} & \frac{\partial L}{\partial w_{12}} \\ \frac{\partial L}{\partial w_{21}} & \frac{\partial L}{\partial w_{22}} \\ \frac{\partial L}{\partial w_{31}} & \frac{\partial L}{\partial w_{32}} \\  \end{pmatrix}
+%			z = f(s) = f(w_1 \cdot x_1 + w_2 \cdot x_2)
 %	\end{equation*}
-%}
-\end{wideitemize}
-\end{frame}
-
-
-%\begin{frame}{Полносвязный слой: обратный проход (backward pass)}
-%\begin{wideitemize}
-%	\item Применим цепное правило: 
 %	
-%	\[
-%	\frac{\partial L}{\partial w_{ij}} =  \sum_k \frac{\partial L}{\partial z_k} \cdot \frac{\partial z_k}{\partial w_{ij}} =   \frac{\partial L}{\partial z_j} \cdot x_i
-%	\]
+%	\alert{ Для SGD нам нужны $\frac{\partial L}{\partial w_1}$  и $\frac{\partial L}{\partial w_2}$ }
+%\end{center}
+%\end{frame}	
+%
+%
+%
+%\begin{frame}{Граф производных}
+%\begin{center}
+%	\begin{tikzpicture}
+%	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
 %	
+%	% Input
+%	\foreach \x in {1,...,2}
+%	\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
+%	
+%	% weights
+%	\draw node at (1, -0.5) [place] (param_1) {$w_1$};
+%	\draw node at (1, -4) [place] (param_2) {$w_2$};
+%	
+%	% product
+%	\foreach \x in {1,...,2}
+%	\node at (3, -\x*1.5) [place] (second_\x){$\cdot$};		
+%	
+%	% sum
+%	\node at (5, -2.25) [place] (sum){$s$};
+%	\node at (7, -2.25) [place] (activ){$f$};
+%	\node at (9, -2.25) [place] (out){$z$};
+%	\node at (11, -2.75) [place] (loss){$L$};
+%	\node at (9, -3.25) [place] (target){$y$};
+%	
+%	\only<1>{
+%	\draw [->, dashed, red]  (second_1) to (first_1) node[below right=2.mm] {$w_1$} ;
+%	\draw [->, dashed, red]  (second_2) to (first_2) node[above right=2.mm] {$w_2$} ;
+%	\draw [->, dashed, red]  (second_1) to (param_1) node[right=1.cm] {$x_1$} ;
+%	\draw [->, dashed, red]  (second_2) to (param_2) node[right=1.cm] {$x_2$} ;
+%	
+%	\draw [->, dashed, red] (sum) to (second_1)  node[right=8.mm] {$1$} ;
+%	\draw [->, dashed, red] (sum) to (second_2)  node[right=8.mm] {$1$} ;
+%	
+%	\draw [->, dashed, red] (activ) to (sum)  node[right=6.mm] {$\frac{\partial f}{\partial s}$} ;
+%	\draw [->, dashed, red] (out) to (activ)  node[right=7.mm] {$1$} ;
+%	\draw [->, dashed] (loss) to (out) node[right=7.mm] {$\frac{\partial L}{\partial z}$} ;
+%	\draw [->, dashed] (loss) to (target) ;
+%	}
+%
+%	\only<2>{
+%	\draw [->, dashed, red]  (second_1) to (first_1) node[below right=2.mm] {$w_1$} ;
+%	\draw [->, dashed, red]  (second_2) to (first_2) node[above right=2.mm] {$w_2$} ;
+%	\draw [->, dashed, amethyst, ultra thick]  (second_1) to (param_1) node[right=1.cm] {$x_1$} ;
+%	\draw [->, dashed, red]  (second_2) to (param_2) node[right=1.cm] {$x_2$} ;
+%	
+%	\draw [->, dashed, amethyst, ultra thick] (sum) to (second_1)  node[right=8.mm] {$1$} ;
+%	\draw [->, dashed, red] (sum) to (second_2)  node[right=8.mm] {$1$} ;
+%	
+%	\draw [->, dashed, amethyst, ultra thick] (activ) to (sum)  node[right=6.mm] {$\frac{\partial f}{\partial s}$} ;
+%	\draw [->, dashed, amethyst, ultra thick] (out) to (activ)  node[right=7.mm] {$1$} ;
+%	\draw [->, dashed, amethyst, ultra thick] (loss) to (out) node[right=7.mm] {$\frac{\partial L}{\partial z}$} ;
+%	\draw [->, dashed] (loss) to (target) ;
+%	}
+%
+%	\only<3>{
+%	\draw [->, dashed, red]  (second_1) to (first_1) node[below right=2.mm] {$w_1$} ;
+%	\draw [->, dashed, red]  (second_2) to (first_2) node[above right=2.mm] {$w_2$} ;
+%	\draw [->, dashed, red]  (second_1) to (param_1) node[right=1.cm] {$x_1$} ;
+%	\draw [->, dashed, amethyst,  ultra thick]  (second_2) to (param_2) node[right=1.cm] {$x_2$} ;
+%	
+%	\draw [->, dashed, red] (sum) to (second_1)  node[right=8.mm] {$1$} ;
+%	\draw [->, dashed, amethyst, ultra thick] (sum) to (second_2)  node[right=8.mm] {$1$} ;
+%	
+%	\draw [->, dashed, amethyst, ultra thick] (activ) to (sum)  node[right=6.mm] {$\frac{\partial f}{\partial s}$} ;
+%	\draw [->, dashed, amethyst, ultra thick] (out) to (activ)  node[right=7.mm] {$1$} ;
+%	\draw [->, dashed, amethyst, ultra thick] (loss) to (out) node[right=7.mm] {$\frac{\partial L}{\partial z}$} ;
+%	\draw [->, dashed] (loss) to (target) ;
+%	}
+%
+%	\end{tikzpicture}
+%
+%	\begin{equation*}
+%	z = f(s) = f(w_1 \cdot x_1 + w_2 \cdot x_2)
+%	\end{equation*}
+%	
+%	\only<1> { \alert{ Для SGD нам нужны $\frac{\partial L}{\partial w_1}$  и $\frac{\partial L}{\partial w_2}$ } }
+%	
+%	\only<2>{ 
 %	\[
-%	z_j = x_1 w_{1j} + x_2 w_{2j} + x_3 w_{3j} 
-%	\]
+%		\frac{\partial L}{\partial w_1} = \frac{\partial L}{\partial z} \cdot \frac{\partial f}{\partial s} \cdot x_1 
+%	\] }
+%
+%	\only<3>{ 
+%	\[
+%		\frac{\partial L}{\partial w_1} = \frac{\partial L}{\partial z} \cdot \frac{\partial f}{\partial s} \cdot x_1  \qquad  \frac{\partial L}{\partial w_2} = \frac{\partial L}{\partial z} \cdot \frac{\partial f}{\partial s} \cdot x_2  
+%	\] }
+%\end{center}
+%\end{frame}	
+%
+%
+%\begin{frame}{Цепное правило и грaф производных}
+%\begin{wideitemize} 
+%	\item Теперь у нас есть алгоритм для подсчета производных для любых
+%	дифференцируемых графов вычислений
+%	
+%	\item \alert{ Осталось делать вычисления быстро }
+%\end{wideitemize} 
+%\end{frame}
+%
+%
+%
+%\begin{frame}{Обратное распространение ошибки}
+%
+%\alert{Мы хотим поменять параметры нейрона в рамках SGD}
+%
+%\vfill
+%
+%\[
+%h_2 = f(w_0 + w_1 z_1 + w_2 z_2)
+%\]
+%
+%\vfill
+%
+%\[
+%\frac{\partial L}{\partial w_1} = \frac{\partial L}{\partial y} \cdot \frac{\partial y}{\partial w_1} =  \frac{\partial L}{\partial y} \cdot {\color{blue} \frac{\partial y}{\partial h_2}} \cdot \frac{\partial h_2}{\partial w_1} 
+%\]
+%
+%\vfill
+%
+%\[
+%w_1^t = w_1^{t-1} - \gamma \cdot \frac{\partial L}{\partial w_1} (w_1^{t-1})
+%\]
+%\end{frame}
+%
+%
+%\begin{frame}{Обратное распространение ошибки}
+%\begin{equation*} 
+%\begin{aligned}
+%	\only<1-6>{ & 3: \quad  {\color{blue} \frac{\partial y}{\partial h_2} \qquad \frac{\partial y}{\partial h_1}} \\} 
+%	\only<2-6>{& 2: \quad \frac{\partial y}{\partial z_1} = {\color{blue} \frac{\partial y}{\partial h_1}} \cdot {\color{amethyst} \frac{\partial h_1}{\partial z_1}} + \frac{\partial y}{\partial h_2} \cdot {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}   \qquad  \frac{\partial y}{\partial z_2} =  {\color{blue} \frac{\partial y}{\partial h_1}} \cdot {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  + {\color{blue} \frac{\partial y}{\partial h_2}} \cdot {\color{junglegreen} \frac{\partial h_2}{\partial z_2}} \\} 
+%	\only<3>{& 1: \quad \frac{\partial y}{\partial x_1} = {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}    +    {\color{blue} \frac{\partial y}{\partial h_2}}   {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}  {\color{red} \frac{\partial z_1}{\partial x_1}}      +  {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}}     +             {\color{blue} \frac{\partial y}{\partial h_2}}  {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}  {\color{green} \frac{\partial z_2}{\partial x_1}} \\ }  
+%	\only<4>{& 1: \quad \frac{\partial y}{\partial x_1} = \left( {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_1}}    + {\color{blue} \frac{\partial y}{\partial h_2}}   {\color{junglegreen} \frac{\partial h_2}{\partial z_1}}  \right) \cdot {\color{red} \frac{\partial z_1}{\partial x_1}}  + \left( {\color{blue} \frac{\partial y}{\partial h_1}}  {\color{amethyst} \frac{\partial h_1}{\partial z_2}} +    {\color{blue} \frac{\partial y}{\partial h_2}}  {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}  \right) \cdot {\color{green} \frac{\partial z_2}{\partial x_1}} \\  }
+%	\only<5>{& 1: \quad \frac{\partial y}{\partial x_1} =  \frac{\partial y}{\partial z_1} \cdot {\color{red} \frac{\partial z_1}{\partial x_1}}  + \frac{\partial y}{\partial z_2} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}} \\  }
+%	\only<6>{& 1: \quad \frac{\partial y}{\partial x_1} =  \frac{\partial y}{\partial z_1} \cdot {\color{red} \frac{\partial z_1}{\partial x_1}}  + \frac{\partial y}{\partial z_2} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}} \qquad \frac{\partial y}{\partial x_2} =  \frac{\partial y}{\partial z_1} \cdot {\color{red} \frac{\partial z_1}{\partial x_2}}  + \frac{\partial y}{\partial z_2} \cdot {\color{green} \frac{\partial z_2}{\partial x_2}}  \\  }
+%	\only<7>{
+%		& 3: \quad  {\color{blue} \frac{\partial y}{\partial h_2}   \qquad  \boxed{ \frac{\partial y}{\partial h_1}} } \\
+%		& 2: \quad \boxed{ \frac{\partial y}{\partial z_1} } = {\color{blue}   \boxed{  \frac{\partial y}{\partial h_1}}}  \cdot {\color{amethyst} \frac{\partial h_1}{\partial z_1}} + \frac{\partial y}{\partial h_2} \cdot {\color{junglegreen} \frac{\partial h_2}{\partial z_2}}   \qquad  \frac{\partial y}{\partial z_2} =  {\color{blue} \boxed{ \frac{\partial y}{\partial h_1}} } \cdot {\color{amethyst} \frac{\partial h_1}{\partial z_2}}  + {\color{blue} \frac{\partial y}{\partial h_2}} \cdot {\color{junglegreen} \frac{\partial h_2}{\partial z_2}} \\
+%		& 1: \quad \frac{\partial y}{\partial x_1} =  \boxed{ \frac{\partial y}{\partial z_1} } \cdot {\color{red} \frac{\partial z_1}{\partial x_1}}  + \frac{\partial y}{\partial z_2} \cdot {\color{green} \frac{\partial z_2}{\partial x_1}} \qquad \frac{\partial y}{\partial x_2} = \boxed{ \frac{\partial y}{\partial z_1}} \cdot {\color{red} \frac{\partial z_1}{\partial x_2}}  + \frac{\partial y}{\partial z_2} \cdot {\color{green} \frac{\partial z_2}{\partial x_2}}  \\  
+%	}
+%\end{aligned} 
+%\end{equation*}
+%
+%\begin{center}
+%	\begin{tikzpicture}
+%	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
+%	
+%	% Input
+%	\foreach \x in {1,...,2}
+%	\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
+%	
+%	% Hidden 1
+%	\foreach \x in {1,...,2}
+%	\node at (3, -\x*1.5) [place] (second_\x){$z_\x$};		
+%	
+%	% Hidden 2
+%	\foreach \x in {1,...,2}
+%	\node at (6, -\x*1.5) [place] (third_\x){$h_\x$};	
+%	
+%	% Output
+%	\node at (9, -2.25) [place] (fourth){$y$};
+%	
+%	\draw [->, dashed, red]  (second_1) to (first_1);
+%	\draw [->, dashed, green]  (second_2) to (first_1);
+%	\draw [->, dashed, red]  (second_1) to (first_2);
+%	\draw [->, dashed, green]  (second_2) to (first_2);
+%	
+%	\draw [->, dashed, amethyst]  (third_1) to (second_1);
+%	\draw [->, dashed, junglegreen]  (third_2) to (second_1);
+%	\draw [->, dashed, amethyst] (third_1) to (second_2);
+%	\draw [->, dashed, junglegreen]  (third_2) to (second_2);
+%	
+%	\draw [->, dashed,  blue]  (fourth) to (third_1);
+%	\draw [->, dashed, blue]   (fourth) to (third_2);
+%	
+%	\only<1-6>{ 
+%		\draw [->, dashed,  ultra thick, blue]  (fourth) to (third_1);
+%		\draw [->, dashed, ultra thick, blue]   (fourth) to (third_2);
+%	}
+%
+%	\only<2-6>{ 
+%		\draw [->, dashed, ultra thick, amethyst]  (third_1) to (second_1);
+%		\draw [->, dashed, ultra thick, junglegreen]  (third_2) to (second_1);
+%	}
+%
+%	\only<3-6>{ 
+%		\draw [->, dashed, ultra thick, red]  (second_1) to (first_1);
+%	}
+%	\end{tikzpicture}
+%\end{center}
+%\end{frame}
+%
+%
+%\begin{frame}{Обратное распространение ошибки}
+%\begin{wideitemize} 
+%	\item Это называется reverse-mode дифференцирование, в теории нейросетей это называют \alert{back-propagation (обратное распространение ошибки)}
+%	
+%	\item Работает быстро, потому что переиспользует вычисленные ранее значения
+%	
+%	\item На самом деле, по каждому ребру пройдемся всего раз, то есть сложность линейна	по количеству ребер (т.е. параметров)
+%\end{wideitemize} 
+%\end{frame}
+%
+%
+%\begin{frame}{Back-propagation на одном нейроне}
+%\begin{center}
+%	\begin{tikzpicture}
+%	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
+%	\tikzstyle{place2}=[circle, draw=red, minimum size = 8mm]
+%	
+%	% Input
+%	\foreach \x in {1,...,2}
+%	\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
+%	
+%	% weights
+%	\draw node at (1, -0.5) [place] (param_1) {$w_1$};
+%	\draw node at (1, -4) [place] (param_2) {$w_2$};
+%	
+%	% product
+%	\foreach \x in {1,...,2}
+%	\node at (3, -\x*1.5) [place] (second_\x){$\cdot$};		
+%	
+%	\node[thick] at (7, -1) {$z = \sigma(s) = \sigma(w_1 x_1 + w_2 x_2)$};
+%	
+%	% sum
+%	\node  at (5, -2.25) [place] (sum){$s$};
+%	\node at (7, -2.25) [place] (activ){$\sigma$};
+%	\node at (9, -2.25) [place] (out){$z$};
+%	
+%	\draw [->]  (first_1) to (second_1);
+%	\draw [->]  (first_2) to (second_2);	
+%	\draw [->]  (param_1) to (second_1);
+%	\draw [->]  (param_2) to (second_2);
+%	
+%	\draw [->] (second_1) to (sum);
+%	\draw [->] (second_2) to (sum);
+%	
+%	\draw [->] (sum) to (activ);
+%	\draw [->] (activ) to (out);
+%\end{tikzpicture}
+%\end{center}
+%	
+%\vfill 
+%	
+%Данные текут сквозь нейрон:
+%
+%\[  \boxed{X} \Rightarrow \boxed{s = X \cdot W}  \Rightarrow  \boxed{z =\sigma(s)}   \Rightarrow  \boxed{L(z, y) = (y - z)^2 }\]
+%\end{frame} 
+%
+%
+%\begin{frame}{Back-propagation на одном нейроне}
+%
+%Forward pass:
+%
+%\only<1>{ \[  \boxed{X} \Rightarrow \boxed{s = X \cdot W}  \Rightarrow  \boxed{z =\sigma(s)}   \Rightarrow  \boxed{L(z, y) = (y - z)^2 }\] }
+%
+%\only<2>{ \[  \boxed{X} \Rightarrow { \color{amethyst} \boxed{s = X \cdot W} }  \Rightarrow  \boxed{z =\sigma(s)}   \Rightarrow  \boxed{L(z, y) = (y - z)^2 }\] }
+%
+%Backward pass: 
+%
+%\begin{center}
+%	\begin{tikzpicture}
+%	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
+%	
+%	% Input
+%	\foreach \x in {1,...,2}
+%	\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
+%	
+%	% weights
+%	\draw node at (1, -0.5) [place] (param_1) {$w_1$};
+%	\draw node at (1, -4) [place] (param_2) {$w_2$};
+%	
+%	% product
+%	\foreach \x in {1,...,2}
+%	\node at (3, -\x*1.5) [place] (second_\x){$\cdot$};		
+%	
+%	% sum
+%	\node at (5, -2.25) [place] (sum){$s$};
+%	\node at (7, -2.25) [place] (activ){$f$};
+%	\node at (9, -2.25) [place] (out){$z$};
+%	\node at (11, -2.75) [place] (loss){$L$};
+%	\node at (9, -3.25) [place] (target){$y$};
 %	
 %	\only<2>{
-%	\item перепишем в матричном виде: 
-%	
-%	\[
-%	\frac{\partial L}{\partial W} = \begin{pmatrix}  x_1 \\ x_2 \\ x_3 \end{pmatrix}  \cdot  \begin{pmatrix}  \frac{\partial L}{\partial z_1}  &  \frac{\partial L}{\partial z_2} \end{pmatrix} = x^T \cdot \frac{\partial L}{\partial z}
-%	\]
+%		\node[amethyst,  thick] at (7, 0.4) {\text{Нам нужно вычислить} };
+%		\node[amethyst,  thick] at (7, 0) {\text{сигмоиду в точке s} };
+%		
+%		\node[thick] at (8, -1) {$\frac{\partial \sigma}{\partial s} = \sigma(s) \cdot (1 - \sigma(s))$};
 %	}
+%	
+%	\draw [->, dashed, red]  (second_1) to (first_1) node[below right=2.mm] {$w_1$} ;
+%	\draw [->, dashed, red]  (second_2) to (first_2) node[above right=2.mm] {$w_2$} ;
+%	\draw [->, dashed, red]  (second_1) to (param_1) node[right=1.cm] {$x_1$} ;
+%	\draw [->, dashed, red]  (second_2) to (param_2) node[right=1.cm] {$x_2$} ;
+%	
+%	\draw [->, dashed, red] (sum) to (second_1)  node[right=8.mm] {$1$} ;
+%	\draw [->, dashed, red] (sum) to (second_2)  node[right=8.mm] {$1$} ;
+%	
+%	\only<1>{ \draw [->, dashed, red] (activ) to (sum)  node[right=6.mm] {$\frac{\partial \sigma}{\partial s}$} ; }
+%	
+%	\only<2>{ \draw [->, dashed, ultra thick, amethyst] (activ) to (sum)  node[right=6.mm] {$\frac{\partial \sigma}{\partial s}$} ; }
+%	
+%	\draw [->, dashed, red] (out) to (activ)  node[right=7.mm] {$1$} ;
+%	\draw [->, dashed] (loss) to (out) node[right=7.mm] {$\frac{\partial L}{\partial z}$} ;
+%	\draw [->, dashed] (loss) to (target) ;
+%	\end{tikzpicture}
+%\end{center}
+%\end{frame} 
+%
+%
+%\begin{frame}{Сигмоида: прямой проход (forward pass)}
+%\begin{center}
+%	\begin{tikzpicture}
+%	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
+%	\tikzstyle{place2}=[circle, draw=red, minimum size = 8mm]
+%	
+%	% Input
+%	\foreach \x in {1,...,2}
+%	\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
+%	
+%	% weights
+%	\draw node at (1, -0.5) [place] (param_1) {$w_1$};
+%	\draw node at (1, -4) [place] (param_2) {$w_2$};
+%	
+%	% product
+%	\foreach \x in {1,...,2}
+%	\node at (3, -\x*1.5) [place] (second_\x){$\cdot$};		
+%	
+%	\node[thick] at (7, -1) {$z = \sigma(s) = \sigma(w_1 x_1 + w_2 x_2)$};
+%	
+%	% sum
+%	\node  at (5, -2.25) [place2] (sum){\color{red} $s$};
+%	\node at (7, -2.25) [place2] (activ){\color{red} $\sigma$};
+%	\node at (9, -2.25) [place2] (out){\color{red} $z$};
+%	
+%	\draw [->]  (first_1) to (second_1);
+%	\draw [->]  (first_2) to (second_2);	
+%	\draw [->]  (param_1) to (second_1);
+%	\draw [->]  (param_2) to (second_2);
+%	
+%	\draw [->] (second_1) to (sum);
+%	\draw [->] (second_2) to (sum);
+%	
+%	\draw [->, red] (sum) to (activ);
+%	\draw [->, red] (activ) to (out);
+%	\end{tikzpicture}
+%\end{center}
+%	
+%{\color{green} def}  {\color{blue} forward\_pass}(s):  \\
+%\mbox{ } \hspace{5mm} {\color{green} return } 1/(1 + np.exp(-s))
+%\end{frame} 
+%
+%
+%
+%\begin{frame}{Сигмоида: обратный проход (backward pass)}
+%\begin{center}
+%	\begin{tikzpicture}
+%	\tikzstyle{place}=[circle, draw=black, minimum size = 8mm]
+%	\tikzstyle{place2}=[circle, draw=red, minimum size = 8mm]
+%	\tikzstyle{place3}=[circle, draw=amethyst, minimum size = 8mm]
+%	
+%	% Input
+%	\foreach \x in {1,...,2}
+%	\draw node at (0, -\x*1.5) [place] (first_\x) {$x_\x$};
+%	
+%	% weights
+%	\draw node at (1, -0.5) [place] (param_1) {$w_1$};
+%	\draw node at (1, -4) [place] (param_2) {$w_2$};
+%	
+%	% product
+%	\foreach \x in {1,...,2}
+%	\node at (3, -\x*1.5) [place] (second_\x){$\cdot$};		
+%	
+%	% sum
+%	\node at (5, -2.25) [place3] (sum){\color{amethyst} $s$};
+%	\node at (7, -2.25) [place2] (activ){\color{red} $\sigma$};
+%	\node at (9, -2.25) [place2] (out){\color{red} $z$};
+%	\node at (11, -2.75) [place] (loss){$L$};
+%	\node at (9, -3.25) [place] (target){$y$};
+%	
+%	\node[amethyst,  thick] at (7, 0.4) {\text{Нам нужно вычислить} };
+%	\node[amethyst,  thick] at (7, 0) {\text{сигмоиду в точке s} };
+%	
+%	\node[thick] at (8, -1) {\color{red} $\frac{\partial \sigma}{\partial s} = \sigma(s) \cdot (1 - \sigma(s))$};
+%	
+%	\draw [->, dashed]  (second_1) to (first_1) node[below right=2.mm] {$w_1$} ;
+%	\draw [->, dashed]  (second_2) to (first_2) node[above right=2.mm] {$w_2$} ;
+%	\draw [->, dashed]  (second_1) to (param_1) node[right=1.cm] {$x_1$} ;
+%	\draw [->, dashed]  (second_2) to (param_2) node[right=1.cm] {$x_2$} ;
+%	
+%	\draw [->, dashed] (sum) to (second_1)  node[right=8.mm] {$1$} ;
+%	\draw [->, dashed] (sum) to (second_2)  node[right=8.mm] {$1$} ;
+%	
+%	 \draw [->, dashed, red] (activ) to (sum)  node[right=6.mm] {$\frac{\partial \sigma}{\partial s}$} ; 
+%	
+%	\draw [->, dashed, red] (out) to (activ)  node[right=7.mm] {$1$} ;
+%	\draw [->, dashed, junglegreen] (loss) to (out) node[right=7.mm] {\color{junglegreen} $\frac{\partial L}{\partial z}$} ;
+%	\draw [->, dashed] (loss) to (target) ;
+%	\end{tikzpicture}
+%\end{center}
+%
+%\begin{columns}
+%	\begin{column}{.69\textwidth}
+%		{\color{green} def}  {\color{blue} backward\_pass}({\color{amethyst} s}, {\color{junglegreen} incoming\_gradient}):  \\
+%		\mbox{ } \hspace{5mm} { sigm =  1/(1 + np.exp({\color{amethyst}-s}))}) \\
+%		\mbox{ } \hspace{5mm} {\color{green} return }  {\color{red} sigm * (1 - sigm) } *  {\color{junglegreen} incoming\_gradient}
+%	\end{column}
+%	\begin{column}{.29\textwidth}
+%		\[  \frac{ \partial L}{\partial s}  = {\color{red}  \frac{ \partial \sigma}{\partial s} } \cdot {\color{junglegreen} \frac{ \partial L}{\partial \sigma} }   \]
+%	\end{column}
+%\end{columns}
+%\end{frame} 
+%
+%
+%\begin{frame}{Полносвязный слой: прямой проход (forward pass)}
+%\begin{wideitemize}
+%\item Два нейрона с тремя входами:
+%
+%\begin{equation*}
+%\begin{aligned}
+%	& z_1 = x_1 w_{11} + x_2 w_{21} + x_3 w_{31}  \\  
+%	& z_2 = x_1 w_{12} + x_2 w_{22} + x_3 w_{32}  \\  
+%\end{aligned}
+%\end{equation*}
+%
+%\item Матричная запись: 
+%
+%\begin{equation*}
+%	\begin{pmatrix} z_1 & z_2 \end{pmatrix}  = \begin{pmatrix} x_1 & x_2 & x_3  \end{pmatrix}  \cdot  \begin{pmatrix} w_{11} & w_{12} \\ w_{21} & w_{22} \\ w_{31}  & w_{32} \\  \end{pmatrix}
+%\end{equation*}
+%
+%\[ 
+%	z  = x W 
+%\]
+%
 %\end{wideitemize}
 %\end{frame}
-
-
-\begin{frame}[fragile]{Полносвязный слой в numpy}
-
-\alert{Прямой проход:} 
-	
-\begin{columns}
-\begin{column}{.49\textwidth}
-{\color{green} def}  {\color{blue} forward\_pass}(X, W):  \\
-\mbox{ } \hspace{5mm} {\color{green} return } X.dot(W))
-\end{column}
-\begin{column}{.49\textwidth}
-\[ Z = XW \]
-\end{column}
-\end{columns}
-
-\vfill 
-
-\alert{Обратный проход:}
-
-\begin{columns}
-\begin{column}{.49\textwidth}
-{\color{green} def}  {\color{blue} forward\_pass}(X, W, in\_grad):  \\
-\mbox{ } \hspace{5mm} dX = in\_grad.dot(W.T) \\
-\mbox{ } \hspace{5mm} dW = X.T.dot(in\_grad) \\
-\mbox{ } \hspace{5mm} {\color{green} return } dX, dW
-\end{column}
-\begin{column}{.49\textwidth}
-
-\[  \frac{\partial L}{\partial X}  =   \frac{\partial L}{\partial Z} \cdot W^T \]
-\[ \frac{\partial L}{\partial W}  =  X^T \cdot \frac{\partial L}{\partial Z} \]
-\end{column}
-\end{columns}
-\begin{center}
-	\alert{Эти формулы мы получим на семинаре}
-\end{center}
-\end{frame}
-
-
-\begin{frame}{Back-propagation}
-\begin{center}
-	\includegraphics[width=.8\linewidth]{backpropagation.png}
-\end{center}
-\end{frame}
-
-
-\begin{frame}{Back-propagation}
-
-\alert{Forward pass:}
-
-\begin{center}
-	\begin{tikzpicture}
-	\tikzstyle{place}=[rectangle, draw=black, minimum size = 8mm]
-	\draw node at (0, 0) (input) {$X$};
-	\draw node at (2, 0) (h1) {$H_1$};
-	\draw node at (4, 0) (o1) {$O_1$};
-	\draw node at (6, 0) (h2) {$H_2$};
-	\draw node at (8, 0) (o2) {$O_2$};
-	\draw node at (10, 0) (output) {$\hat{y} $};
-	\draw node at (12, 0) (mse) {$MSE$};
-	
-	\draw [->]  (input) -- (h1) node[pos=.49, above] {$W_1$} ;
-	\draw [->]  (h1) -- (o1) node[pos=.49, above] {$f$} ;
-	\draw [->]  (o1) -- (h2) node[pos=.49, above] {$W_2$} ;
-	\draw [->]  (h2) -- (o2) node[pos=.49, above] {$f$} ;
-	\draw [->]  (o2) -- (output) node[pos=.49, above] {$W_3$} ;
-	\draw [->]  (output) to (mse);	
-	\end{tikzpicture}
-\end{center}
-	
-
-\vfill
-	
-\alert{Backward pass:}
-	
-\begin{center}
-	\begin{tikzpicture}
-		\draw node at (0, 0) (input) {$X$};
-		\draw node at (2, 0) (h1) {$H_1$};
-		\draw node at (4, 0) (o1) {$O_1$};
-		\draw node at (6, 0) (h2) {$H_2$};
-		\draw node at (8, 0) (o2) {$O_2$};
-		\draw node at (10, 0) (output) {$\hat{y} $};
-		\draw node at (12, 0) (mse) {$MSE$};
-		
-		\draw [->, dashed]   (h1)  -- (input) node[pos=.49, above] {$\frac{\partial H_1}{\partial X}$} ;
-		\draw [->, dashed]   (o1) -- (h1) node[pos=.49, above] {$\frac{\partial O_1}{\partial H_1}$} ;
-		\draw [->, dashed]   (h2) -- (o1) node[pos=.49, above] {$\frac{\partial H_2}{\partial O_1}$} ;
-		\draw [->, dashed]   (o2) -- (h2) node[pos=.49, above] {$\frac{\partial O_2}{\partial H_2}$} ;
-		\draw [->, dashed]   (output) -- (o2)node[pos=.49, above] {$\frac{\partial \hat{y}}{\partial O_2}$} ;
-		\draw [->, dashed]  (mse) -- (output) node[pos=.49, above] {$\frac{\partial MSE}{\partial \hat{y} }$} ;	
-		
-		\draw [->, dashed]  (9, -0.05) -- (9, -1.2)  node[pos=.49, right] {$\frac{\partial \hat{y}}{\partial W_3} = O_2^T$} ;
-		\draw [->, dashed]  (5, -0.05) -- (5, -1.2)  node[pos=.49, right] {$\frac{\partial H_2}{\partial W_2} = O_1^T$} ;
-		\draw [->, dashed]  (1, -0.05) -- (1, -1.2)  node[pos=.49, right] {$\frac{\partial H_1}{\partial W_1} = X^T$} ;
-	\end{tikzpicture}
-\end{center}
-\end{frame}
-
-
-
-\begin{frame}{Back-propagation}
-\alert{Forward pass:}
-
-\begin{center}
-	\begin{tikzpicture}
-	\tikzstyle{place}=[rectangle, draw=black, minimum size = 8mm]
-	\draw node at (0, 0) (input) {$X$};
-	\draw node at (2, 0) (h1) {$H_1$};
-	\draw node at (4, 0) (o1) {$O_1$};
-	\draw node at (6, 0) (h2) {$H_2$};
-	\draw node at (8, 0) (o2) {$O_2$};
-	\draw node at (10, 0) (output) {$\hat{y} $};
-	\draw node at (12, 0) (mse) {$MSE$};
-	
-	\draw [->]  (input) -- (h1) node[pos=.49, above] {$W_1$} ;
-	\draw [->]  (h1) -- (o1) node[pos=.49, above] {$\sigma$} ;
-	\draw [->]  (o1) -- (h2) node[pos=.49, above] {$W_2$} ;
-	\draw [->]  (h2) -- (o2) node[pos=.49, above] {$\sigma$} ;
-	\draw [->]  (o2) -- (output) node[pos=.49, above] {$W_3$} ;
-	\draw [->]  (output) to (mse);	
-	\end{tikzpicture}
-\end{center}
-
-\vfill
-
-\alert{Backward pass:}
-
-\begin{center}
-	\begin{tikzpicture}
-	\draw node at (0, 0) (input) {$X$};
-	\draw node at (2, 0) (h1) {$H_1$};
-	\draw node at (4, 0) (o1) {$O_1$};
-	\draw node at (6, 0) (h2) {$H_2$};
-	\draw node at (8, 0) (o2) {$O_2$};
-	\draw node at (10, 0) (output) {$\hat{y}$};
-	\draw node at (12, 0) (mse) {$MSE$};
-	
-	\draw [->, dashed]   (h1)  -- (input) node[pos=.49, above] {\scriptsize $W_1^T$} ;
-	\draw [->, dashed]   (o1) -- (h1) node[pos=.49, above] {\scriptsize $O_1 (1-O_1)$} ;
-	\draw [->, dashed]   (h2) -- (o1) node[pos=.49, above] {\scriptsize $W_2^T$} ;
-	\draw [->, dashed]   (o2) -- (h2) node[pos=.49, above] {\scriptsize $O_2 (1 - O_2)$} ;
-	\draw [->, dashed]   (output) -- (o2)node[pos=.49, above] {\scriptsize $W_3^T$} ;
-	\draw [->, dashed]  (mse) -- (output) node[pos=.49, above] {\scriptsize $-2(\hat{y} - y)$} ;	
-	
-	\draw [->, dashed]  (9, -0.05) -- (9, -1.2)  node[pos=.49, right] {$O_2^T$} ;
-	\draw [->, dashed]  (5, -0.05) -- (5, -1.2)  node[pos=.49, right] {$O_1^T$} ;
-	\draw [->, dashed]  (1, -0.05) -- (1, -1.2)  node[pos=.49, right] {$X^T$} ;
-	\end{tikzpicture}
-\end{center}
-\end{frame}
-
-
-
-\begin{frame}{Back-propagation}
-
-\begin{center}
-	\begin{tikzpicture}
-	\draw node at (0, 0) (input) {$X$};
-	\draw node at (2, 0) (h1) {$H_1$};
-	\draw node at (4, 0) (o1) {$O_1$};
-	
-	\only<3>{ 
-		\draw node at (0, 0) (input) {\color{red} $X$};
-		\draw node at (2, 0) (h1) {\color{red} $H_1$};
-		\draw node at (4, 0) (o1) {\color{red} $O_1$};
-	}
-	
-	\draw node at (6, 0) (h2) {$H_2$};
-	\draw node at (8, 0) (o2) {$O_2$};
-	
-	\only<2>{ 
-		\draw node at (6, 0) (h2) {\color{red}  $H_2$};
-		\draw node at (8, 0) (o2) {\color{red} $O_2$};	
-	}
-	
-	\draw node at (10, 0) (output) {$\hat{y}$};
-	\draw node at (12, 0) (mse) {$MSE$};
-	
-	\only<1>{ 
-		\draw node at (10, 0) (output) {\color{red} $\hat{y}$};
-		\draw node at (12, 0) (mse) {\color{red} $MSE$};	
-	}
-		
-	\draw [->, dashed]   (output) -- (o2)node[pos=.49, above] {\scriptsize $W_3^T$} ;
-	\draw [->, dashed]  (mse) -- (output) node[pos=.49, above] {\scriptsize $-2(\hat{y} - y)$} ;	
-	\draw [->, dashed]  (9, -0.05) -- (9, -1.2)  node[pos=.49, right] {$O_2^T$} ;
-		
-	\only<1>{ 
-		\draw [->, dashed, red]   (output) -- (o2)node[pos=.49, above] {\color{red} \scriptsize $W_3^T$} ;
-		\draw [->, dashed, red]  (mse) -- (output) node[pos=.49, above] {\color{red} \scriptsize $-2(\hat{y} - y)$} ;	
-		\draw [->, dashed, red]  (9, -0.05) -- (9, -1.2)  node[pos=.49, right] {\color{red} $O_2^T$} ;
-	}
-
-	\draw [->, dashed]   (h2) -- (o1) node[pos=.49, above] {\scriptsize $W_2^T$} ;
-	\draw [->, dashed]   (o2) -- (h2) node[pos=.49, above] {\scriptsize $O_2 (1 - O_2)$} ;
-	\draw [->, dashed]  (5, -0.05) -- (5, -1.2)  node[pos=.49, right] {$O_1^T$} ;
-	
-	\only<2>{ 
-		\draw [->, dashed, red]   (h2) -- (o1) node[pos=.49, above] {\color{red} \scriptsize $W_2^T$} ;
-		\draw [->, dashed, red]   (o2) -- (h2) node[pos=.49, above] {\color{red} \scriptsize $O_2 (1 - O_2)$} ;
-		\draw [->, dashed, red]  (5, -0.05) -- (5, -1.2)  node[pos=.49, right] {\color{red} $O_1^T$} ;
-	}
-
-	\draw [->, dashed]   (h1)  -- (input) node[pos=.49, above] {\scriptsize $W_1^T$} ;
-	\draw [->, dashed]   (o1) -- (h1) node[pos=.49, above] {\scriptsize $O_1 (1-O_1)$} ;
-	\draw [->, dashed]  (1, -0.05) -- (1, -1.2)  node[pos=.49, right] {$X^T$} ;
-
-	\only<3>{ 
-		\draw [->, dashed, red]   (h1)  -- (input) node[pos=.49, above] {\color{red} \scriptsize $W_1^T$} ;
-		\draw [->, dashed, red]   (o1) -- (h1) node[pos=.49, above] {\color{red} \scriptsize $O_1 (1-O_1)$} ;
-		\draw [->, dashed, red]  (1, -0.05) -- (1, -1.2)  node[pos=.49, right] {\color{red} $X^T$} ;
-	}	
-	\end{tikzpicture}
-\end{center}
-
-\vfill
-
-\begin{columns}
-	\begin{column}{.28\textwidth}
-		\alert{Шаг 1:}
-		\begin{equation*} 
-			\begin{aligned}
-				&  d = -2 (\hat{y} - y) \\
-				&  \frac{\partial MSE}{\partial W_3} = O_2^T \cdot d    \\
-			\end{aligned}
-		\end{equation*}
-	\end{column}
-	\begin{column}{.3\textwidth}
-		\only<2-4>{
-		\alert{Шаг 2:}
-		\begin{equation*} 
-			\begin{aligned}
-				&  d = d \cdot W_3^T * O_2 * (1 - O_2)  \\
-				&  \frac{\partial MSE}{\partial W_2} = O_1^T \cdot d \\
-			\end{aligned}
-		\end{equation*}}
-	\end{column}
-	\begin{column}{.35\textwidth}
-		\only<3-4>{
-		\alert{Шаг 3:}
-		\begin{equation*} 
-		\begin{aligned}
-		&  d = d \cdot W_2^T * O_1 * (1 - O_1)  \\
-		&  \frac{\partial MSE}{\partial W_1} = X^T \cdot d \\
-		\end{aligned}
-		\end{equation*}}
-	\end{column}
-\end{columns}
-
-\vfill
-
-\only<4>{  \alert{  Шаг SGD:}
-{\footnotesize
-\begin{columns}
-	\begin{column}{.28\textwidth}
-			\[  W_3^t = W_3^{t-1} - \eta \cdot \frac{\partial MSE}{\partial W_3}  \]
-	\end{column}
-	\begin{column}{.3\textwidth}
-			\[  W_2^t = W_2^{t-1} - \eta \cdot \frac{\partial MSE}{\partial W_2}  \]
-	\end{column}
-	\begin{column}{.35\textwidth}
-			\[  W_1^t = W_1^{t-1} - \eta \cdot \frac{\partial MSE}{\partial W_1}  \]
-	\end{column}
-\end{columns} 
-	}
-}
-\end{frame}
-
-
-
-\begin{frame}{Что такое слой в нейронной сети?}
-	\begin{wideitemize}
-		\item Любой слой - это какая-то абстракция, которая умеет делать прямой шаг и обратный шаг
-	
-		\item Для всех слоёв, которые мы дальше будем изучать, мы всегда будем смотреть на то как выглядят эти два шага
-	\end{wideitemize}
-\end{frame}
-
-
-\begin{frame}{А мне точно надо понимать backprop?}
-	\begin{wideitemize}
-		\item  \alert{Да, точно!} 
-				
-		\item  "Backprop – leaky abstraction!"
-		
-		\item  Почему сеть не обучается?
-		
-		\item  Почему сеть обучается слишком медленно? 
-		
-		\item  Какие проблемы могут возникать в обучении из-за плохой архитектуры? 
-	\end{wideitemize}
-\end{frame}
+%
+%
+%\begin{frame}{Полносвязный слой: обратный проход (backward pass)}
+%\begin{wideitemize}
+%
+%	\item Матричная запись: 
+%	
+%	\begin{equation*}
+%	\begin{pmatrix} z_1 & z_2 \end{pmatrix}  = \begin{pmatrix} x_1 & x_2 & x_3  \end{pmatrix}  \cdot  \begin{pmatrix} w_{11} & w_{12} \\ w_{21} & w_{22} \\ w_{31}  & w_{32} \\  \end{pmatrix}
+%	\end{equation*}
+%	
+%	\[ 
+%	Z  = X W 
+%	\]
+%
+%\only<1>{	
+%	\item Для обратного прохода нам нужна $\frac{\partial L}{\partial W}$: 
+%	
+%	\[
+%	W_t = W_{t-1} - \eta_t \cdot \left. \frac{\partial L}{\partial W} \right |_{W_{t-1}}
+%	\]
+%	}
+%
+%%\only<2>{	
+%%	\item Нужная нам производная - матрица: 
+%%	
+%%	\begin{equation*}
+%%		\frac{\partial L}{\partial W} =  \begin{pmatrix}   \frac{\partial L}{\partial w_{11}} & \frac{\partial L}{\partial w_{12}} \\ \frac{\partial L}{\partial w_{21}} & \frac{\partial L}{\partial w_{22}} \\ \frac{\partial L}{\partial w_{31}} & \frac{\partial L}{\partial w_{32}} \\  \end{pmatrix}
+%%	\end{equation*}
+%%}
+%\end{wideitemize}
+%\end{frame}
+%
+%
+%%\begin{frame}{Полносвязный слой: обратный проход (backward pass)}
+%%\begin{wideitemize}
+%%	\item Применим цепное правило: 
+%%	
+%%	\[
+%%	\frac{\partial L}{\partial w_{ij}} =  \sum_k \frac{\partial L}{\partial z_k} \cdot \frac{\partial z_k}{\partial w_{ij}} =   \frac{\partial L}{\partial z_j} \cdot x_i
+%%	\]
+%%	
+%%	\[
+%%	z_j = x_1 w_{1j} + x_2 w_{2j} + x_3 w_{3j} 
+%%	\]
+%%	
+%%	\only<2>{
+%%	\item перепишем в матричном виде: 
+%%	
+%%	\[
+%%	\frac{\partial L}{\partial W} = \begin{pmatrix}  x_1 \\ x_2 \\ x_3 \end{pmatrix}  \cdot  \begin{pmatrix}  \frac{\partial L}{\partial z_1}  &  \frac{\partial L}{\partial z_2} \end{pmatrix} = x^T \cdot \frac{\partial L}{\partial z}
+%%	\]
+%%	}
+%%\end{wideitemize}
+%%\end{frame}
+%
+%
+%\begin{frame}[fragile]{Полносвязный слой в numpy}
+%
+%\alert{Прямой проход:} 
+%
+%\mbox{  }
+%
+%\begin{columns}
+%\begin{column}{.49\textwidth}
+%{\color{green} def}  {\color{blue} forward\_pass}(X, W):  \\
+%\mbox{ } \hspace{5mm} {\color{green} return } X.dot(W))
+%\end{column}
+%\begin{column}{.49\textwidth}
+%\[ Z = XW \]
+%\end{column}
+%\end{columns}
+%
+%\vfill 
+%
+%\alert{Обратный проход:}
+%
+%\begin{columns}
+%\begin{column}{.49\textwidth}
+%{\color{green} def}  {\color{blue} forward\_pass}(X, W, in\_grad):  \\
+%\mbox{ } \hspace{5mm} dX = in\_grad.dot(W.T) \\
+%\mbox{ } \hspace{5mm} dW = X.T.dot(in\_grad) \\
+%\mbox{ } \hspace{5mm} {\color{green} return } dX, dW
+%\end{column}
+%\begin{column}{.49\textwidth}
+%
+%\[  \frac{\partial L}{\partial X}  =   \frac{\partial L}{\partial Z} \cdot W^T \]
+%\[ \frac{\partial L}{\partial W}  =  X^T \cdot \frac{\partial L}{\partial Z} \]
+%\end{column}
+%\end{columns}
+%\begin{center}
+%	\alert{Эти формулы мы получим на семинаре}
+%\end{center}
+%\end{frame}
+%
+%
+%\begin{frame}{Back-propagation}
+%\begin{center}
+%	\includegraphics[width=.8\linewidth]{backpropagation.png}
+%\end{center}
+%\end{frame}
+%
+%
+%\begin{frame}{Back-propagation}
+%
+%\alert{Forward pass:}
+%
+%\begin{center}
+%	\begin{tikzpicture}
+%	\tikzstyle{place}=[rectangle, draw=black, minimum size = 8mm]
+%	\draw node at (0, 0) (input) {$X$};
+%	\draw node at (2, 0) (h1) {$H_1$};
+%	\draw node at (4, 0) (o1) {$O_1$};
+%	\draw node at (6, 0) (h2) {$H_2$};
+%	\draw node at (8, 0) (o2) {$O_2$};
+%	\draw node at (10, 0) (output) {$\hat{y} $};
+%	\draw node at (12, 0) (mse) {$MSE$};
+%	
+%	\draw [->]  (input) -- (h1) node[pos=.49, above] {$W_1$} ;
+%	\draw [->]  (h1) -- (o1) node[pos=.49, above] {$f$} ;
+%	\draw [->]  (o1) -- (h2) node[pos=.49, above] {$W_2$} ;
+%	\draw [->]  (h2) -- (o2) node[pos=.49, above] {$f$} ;
+%	\draw [->]  (o2) -- (output) node[pos=.49, above] {$W_3$} ;
+%	\draw [->]  (output) to (mse);	
+%	\end{tikzpicture}
+%\end{center}
+%	
+%
+%\vfill
+%	
+%\alert{Backward pass:}
+%	
+%\begin{center}
+%	\begin{tikzpicture}
+%		\draw node at (0, 0) (input) {$X$};
+%		\draw node at (2, 0) (h1) {$H_1$};
+%		\draw node at (4, 0) (o1) {$O_1$};
+%		\draw node at (6, 0) (h2) {$H_2$};
+%		\draw node at (8, 0) (o2) {$O_2$};
+%		\draw node at (10, 0) (output) {$\hat{y} $};
+%		\draw node at (12, 0) (mse) {$MSE$};
+%		
+%		\draw [->, dashed]   (h1)  -- (input) node[pos=.49, above] {$\frac{\partial H_1}{\partial X}$} ;
+%		\draw [->, dashed]   (o1) -- (h1) node[pos=.49, above] {$\frac{\partial O_1}{\partial H_1}$} ;
+%		\draw [->, dashed]   (h2) -- (o1) node[pos=.49, above] {$\frac{\partial H_2}{\partial O_1}$} ;
+%		\draw [->, dashed]   (o2) -- (h2) node[pos=.49, above] {$\frac{\partial O_2}{\partial H_2}$} ;
+%		\draw [->, dashed]   (output) -- (o2)node[pos=.49, above] {$\frac{\partial \hat{y}}{\partial O_2}$} ;
+%		\draw [->, dashed]  (mse) -- (output) node[pos=.49, above] {$\frac{\partial MSE}{\partial \hat{y} }$} ;	
+%		
+%		\draw [->, dashed]  (9, -0.05) -- (9, -1.2)  node[pos=.49, right] {$\frac{\partial \hat{y}}{\partial W_3} = O_2^T$} ;
+%		\draw [->, dashed]  (5, -0.05) -- (5, -1.2)  node[pos=.49, right] {$\frac{\partial H_2}{\partial W_2} = O_1^T$} ;
+%		\draw [->, dashed]  (1, -0.05) -- (1, -1.2)  node[pos=.49, right] {$\frac{\partial H_1}{\partial W_1} = X^T$} ;
+%	\end{tikzpicture}
+%\end{center}
+%\end{frame}
+%
+%
+%
+%\begin{frame}{Back-propagation}
+%\alert{Forward pass:}
+%
+%\begin{center}
+%	\begin{tikzpicture}
+%	\tikzstyle{place}=[rectangle, draw=black, minimum size = 8mm]
+%	\draw node at (0, 0) (input) {$X$};
+%	\draw node at (2, 0) (h1) {$H_1$};
+%	\draw node at (4, 0) (o1) {$O_1$};
+%	\draw node at (6, 0) (h2) {$H_2$};
+%	\draw node at (8, 0) (o2) {$O_2$};
+%	\draw node at (10, 0) (output) {$\hat{y} $};
+%	\draw node at (12, 0) (mse) {$MSE$};
+%	
+%	\draw [->]  (input) -- (h1) node[pos=.49, above] {$W_1$} ;
+%	\draw [->]  (h1) -- (o1) node[pos=.49, above] {$\sigma$} ;
+%	\draw [->]  (o1) -- (h2) node[pos=.49, above] {$W_2$} ;
+%	\draw [->]  (h2) -- (o2) node[pos=.49, above] {$\sigma$} ;
+%	\draw [->]  (o2) -- (output) node[pos=.49, above] {$W_3$} ;
+%	\draw [->]  (output) to (mse);	
+%	\end{tikzpicture}
+%\end{center}
+%
+%\vfill
+%
+%\alert{Backward pass:}
+%
+%\begin{center}
+%	\begin{tikzpicture}
+%	\draw node at (0, 0) (input) {$X$};
+%	\draw node at (2, 0) (h1) {$H_1$};
+%	\draw node at (4, 0) (o1) {$O_1$};
+%	\draw node at (6, 0) (h2) {$H_2$};
+%	\draw node at (8, 0) (o2) {$O_2$};
+%	\draw node at (10, 0) (output) {$\hat{y}$};
+%	\draw node at (12, 0) (mse) {$MSE$};
+%	
+%	\draw [->, dashed]   (h1)  -- (input) node[pos=.49, above] {\scriptsize $W_1^T$} ;
+%	\draw [->, dashed]   (o1) -- (h1) node[pos=.49, above] {\scriptsize $O_1 (1-O_1)$} ;
+%	\draw [->, dashed]   (h2) -- (o1) node[pos=.49, above] {\scriptsize $W_2^T$} ;
+%	\draw [->, dashed]   (o2) -- (h2) node[pos=.49, above] {\scriptsize $O_2 (1 - O_2)$} ;
+%	\draw [->, dashed]   (output) -- (o2)node[pos=.49, above] {\scriptsize $W_3^T$} ;
+%	\draw [->, dashed]  (mse) -- (output) node[pos=.49, above] {\scriptsize $-2(\hat{y} - y)$} ;	
+%	
+%	\draw [->, dashed]  (9, -0.05) -- (9, -1.2)  node[pos=.49, right] {$O_2^T$} ;
+%	\draw [->, dashed]  (5, -0.05) -- (5, -1.2)  node[pos=.49, right] {$O_1^T$} ;
+%	\draw [->, dashed]  (1, -0.05) -- (1, -1.2)  node[pos=.49, right] {$X^T$} ;
+%	\end{tikzpicture}
+%\end{center}
+%\end{frame}
+%
+%
+%
+%\begin{frame}{Back-propagation}
+%
+%\begin{center}
+%	\begin{tikzpicture}
+%	\draw node at (0, 0) (input) {$X$};
+%	\draw node at (2, 0) (h1) {$H_1$};
+%	\draw node at (4, 0) (o1) {$O_1$};
+%	
+%	\only<3>{ 
+%		\draw node at (0, 0) (input) {\color{red} $X$};
+%		\draw node at (2, 0) (h1) {\color{red} $H_1$};
+%		\draw node at (4, 0) (o1) {\color{red} $O_1$};
+%	}
+%	
+%	\draw node at (6, 0) (h2) {$H_2$};
+%	\draw node at (8, 0) (o2) {$O_2$};
+%	
+%	\only<2>{ 
+%		\draw node at (6, 0) (h2) {\color{red}  $H_2$};
+%		\draw node at (8, 0) (o2) {\color{red} $O_2$};	
+%	}
+%	
+%	\draw node at (10, 0) (output) {$\hat{y}$};
+%	\draw node at (12, 0) (mse) {$MSE$};
+%	
+%	\only<1>{ 
+%		\draw node at (10, 0) (output) {\color{red} $\hat{y}$};
+%		\draw node at (12, 0) (mse) {\color{red} $MSE$};	
+%	}
+%		
+%	\draw [->, dashed]   (output) -- (o2)node[pos=.49, above] {\scriptsize $W_3^T$} ;
+%	\draw [->, dashed]  (mse) -- (output) node[pos=.49, above] {\scriptsize $-2(\hat{y} - y)$} ;	
+%	\draw [->, dashed]  (9, -0.05) -- (9, -1.2)  node[pos=.49, right] {$O_2^T$} ;
+%		
+%	\only<1>{ 
+%		\draw [->, dashed, red]   (output) -- (o2)node[pos=.49, above] {\color{red} \scriptsize $W_3^T$} ;
+%		\draw [->, dashed, red]  (mse) -- (output) node[pos=.49, above] {\color{red} \scriptsize $-2(\hat{y} - y)$} ;	
+%		\draw [->, dashed, red]  (9, -0.05) -- (9, -1.2)  node[pos=.49, right] {\color{red} $O_2^T$} ;
+%	}
+%
+%	\draw [->, dashed]   (h2) -- (o1) node[pos=.49, above] {\scriptsize $W_2^T$} ;
+%	\draw [->, dashed]   (o2) -- (h2) node[pos=.49, above] {\scriptsize $O_2 (1 - O_2)$} ;
+%	\draw [->, dashed]  (5, -0.05) -- (5, -1.2)  node[pos=.49, right] {$O_1^T$} ;
+%	
+%	\only<2>{ 
+%		\draw [->, dashed, red]   (h2) -- (o1) node[pos=.49, above] {\color{red} \scriptsize $W_2^T$} ;
+%		\draw [->, dashed, red]   (o2) -- (h2) node[pos=.49, above] {\color{red} \scriptsize $O_2 (1 - O_2)$} ;
+%		\draw [->, dashed, red]  (5, -0.05) -- (5, -1.2)  node[pos=.49, right] {\color{red} $O_1^T$} ;
+%	}
+%
+%	\draw [->, dashed]   (h1)  -- (input) node[pos=.49, above] {\scriptsize $W_1^T$} ;
+%	\draw [->, dashed]   (o1) -- (h1) node[pos=.49, above] {\scriptsize $O_1 (1-O_1)$} ;
+%	\draw [->, dashed]  (1, -0.05) -- (1, -1.2)  node[pos=.49, right] {$X^T$} ;
+%
+%	\only<3>{ 
+%		\draw [->, dashed, red]   (h1)  -- (input) node[pos=.49, above] {\color{red} \scriptsize $W_1^T$} ;
+%		\draw [->, dashed, red]   (o1) -- (h1) node[pos=.49, above] {\color{red} \scriptsize $O_1 (1-O_1)$} ;
+%		\draw [->, dashed, red]  (1, -0.05) -- (1, -1.2)  node[pos=.49, right] {\color{red} $X^T$} ;
+%	}	
+%	\end{tikzpicture}
+%\end{center}
+%
+%\vfill
+%
+%\begin{columns}
+%	\begin{column}{.28\textwidth}
+%		\alert{Шаг 1:}
+%		\begin{equation*} 
+%			\begin{aligned}
+%				&  d = -2 (\hat{y} - y) \\
+%				&  \frac{\partial MSE}{\partial W_3} = O_2^T \cdot d    \\
+%			\end{aligned}
+%		\end{equation*}
+%	\end{column}
+%	\begin{column}{.3\textwidth}
+%		\only<2-4>{
+%		\alert{Шаг 2:}
+%		\begin{equation*} 
+%			\begin{aligned}
+%				&  d = d \cdot W_3^T * O_2 * (1 - O_2)  \\
+%				&  \frac{\partial MSE}{\partial W_2} = O_1^T \cdot d \\
+%			\end{aligned}
+%		\end{equation*}}
+%	\end{column}
+%	\begin{column}{.35\textwidth}
+%		\only<3-4>{
+%		\alert{Шаг 3:}
+%		\begin{equation*} 
+%		\begin{aligned}
+%		&  d = d \cdot W_2^T * O_1 * (1 - O_1)  \\
+%		&  \frac{\partial MSE}{\partial W_1} = X^T \cdot d \\
+%		\end{aligned}
+%		\end{equation*}}
+%	\end{column}
+%\end{columns}
+%
+%\vfill
+%
+%\only<4>{  \alert{  Шаг SGD:}
+%{\footnotesize
+%\begin{columns}
+%	\begin{column}{.28\textwidth}
+%			\[  W_3^t = W_3^{t-1} - \eta \cdot \frac{\partial MSE}{\partial W_3}  \]
+%	\end{column}
+%	\begin{column}{.3\textwidth}
+%			\[  W_2^t = W_2^{t-1} - \eta \cdot \frac{\partial MSE}{\partial W_2}  \]
+%	\end{column}
+%	\begin{column}{.35\textwidth}
+%			\[  W_1^t = W_1^{t-1} - \eta \cdot \frac{\partial MSE}{\partial W_1}  \]
+%	\end{column}
+%\end{columns} 
+%	}
+%}
+%\end{frame}
+%
+%
+%
+%\begin{frame}{Что такое слой в нейронной сети?}
+%	\begin{wideitemize}
+%		\item Любой слой - это какая-то абстракция, которая умеет делать прямой шаг и обратный шаг
+%	
+%		\item Для всех слоёв, которые мы дальше будем изучать, мы всегда будем смотреть на то как выглядят эти два шага
+%	\end{wideitemize}
+%\end{frame}
+%
+%
+%\begin{frame}{А мне точно надо понимать backprop?}
+%	\begin{wideitemize}
+%		\item  \alert{Да, точно!} 
+%				
+%		\item  "Backprop – leaky abstraction!"
+%		
+%		\item  Почему сеть не обучается?
+%		
+%		\item  Почему сеть обучается слишком медленно? 
+%		
+%		\item  Какие проблемы могут возникать в обучении из-за плохой архитектуры? 
+%	\end{wideitemize}
+%\end{frame}
 
 \end{document}
 
