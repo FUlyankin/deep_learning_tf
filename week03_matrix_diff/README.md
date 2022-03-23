@@ -6,12 +6,10 @@
 
 - Скачать себе [конспект лекции про производные.](https://github.com/FUlyankin/deep_learning_tf/raw/main/week03_matrix_diff/sem03-vector-diff.pdf) Я частично делал его для курса [МО-1 на ФКН.](https://github.com/esokolov/ml-course-hse) Если хочется можно [посмотреть его запись.](https://youtu.be/jNJrzuJm59k)
 
-- Тетрадка для семинара в колабе: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FUlyankin/deep_learning_tf/blob/main/week01_intro/sgd_experiments/SGD_experiments.ipynb)
-
 
 ## Задание 
 
-- На следующей паре будет quiz-2 "Градиентный спуск без матриц". Через пару будет проверочная по матричным производным.
+- Через пару будет quiz-2 "Градиентный спуск без матриц и матричные производные"
 - Порешать [листочек про матричные производные](https://github.com/FUlyankin/deep_learning_tf/raw/main/week03_matrix_diff/neural_nets_tasks_part_4.pdf) и [листочек про обратное распространеие ошибки](https://github.com/FUlyankin/deep_learning_tf/raw/main/week03_matrix_diff/neural_nets_tasks_part_5.pdf) На следующем семинаре разберём задачи, которые попросите. 
 
 
